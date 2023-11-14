@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="未簽章報告"
+             x:Class="ReplicaEmrApp.Views.HomePage"
+             xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
+             xmlns:model="clr-namespace:ReplicaEmrApp.Models"
+             x:DataType="viewModel:HomePageViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="登出" Command="{Binding DoLogoutCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource Glyph="&#xF0343;" Color="Black"
+                     FontFamily="{OnPlatform iOS=material, Android=material}"
+                     Size="40" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Exception" Command="{Binding DoExceptionCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource Glyph="&#xF0243;" Color="Black"
+                     FontFamily="{OnPlatform iOS=material, Android=material}"
+                     Size="40" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        
+
+    </ContentPage.ToolbarItems>    
+    <Grid Margin="0,0,0,21">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="76"/>
+        </Grid.RowDefinitions>
+        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding UnSignItems}" SelectedItem="{Binding SelectedItem}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:UnSignItem">
+                        <Border Margin="20,0,20,16">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6"/>
+                            </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#1C4D51" Offset="0,9" Radius="9" Opacity="0.2"/>
+                            </Border.Shadow>
+                            <Grid HeightRequest="55" HorizontalOptions="Fill" BackgroundColor="White">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:HomePageViewModel}},Path=TapItemCommand}"
+                            CommandParameter="{Binding .}"/>
+                                </Grid.GestureRecognizers>
+
+                                <Grid Margin="12,10" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="35"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="47"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Source="folder.svg" HeightRequest="35" WidthRequest="35"/>
+                                    <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                        <Label FontSize="12" Text="{Binding ReportCode}"></Label>
+                                        <Label  FontSize="14" Text="{Binding ReportName}"></Label>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" FontSize="20" VerticalTextAlignment="Center" HorizontalTextAlignment="End" Text="{Binding TotalReport}"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </RefreshView>
+        <Button Grid.Row="1" Text="全部簽章" Margin="10,10" CornerRadius="100" WidthRequest="283"
+                HeightRequest="56" VerticalOptions="Center" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}" FontSize="20">
+            <Button.Shadow>
+                <Shadow Brush="#707070" Offset="0,20" Opacity="0.2" Radius="20"/>
+            </Button.Shadow>
+        </Button>
+        <!--<ActivityIndicator IsRunning="{Binding IsBusy}" BackgroundColor="Black" Opacity="0.2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Color="#FF8F40">
+        </ActivityIndicator>-->
+    </Grid>
+
+</ContentPage>

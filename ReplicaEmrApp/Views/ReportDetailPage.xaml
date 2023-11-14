@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding PageTitle}"
+             x:Class="ReplicaEmrApp.Views.ReportDetailPage"
+             xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
+             xmlns:dto="clr-namespace:ReplicaEmrApp.Dto"
+             x:DataType="viewModel:ReportDetailPageViewModel" 
+             BackgroundColor="{StaticResource Secondary}">
+
+    <Grid Margin="20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Text="{Binding Summary}" FontSize="12" TextColor="#6C6C6C" VerticalOptions="Center" HorizontalOptions="Start"/>
+        <CollectionView Grid.Row="2" ItemsSource="{Binding ReportDatas}" IsEnabled="False">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:ReportData">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Radius="9" Opacity="0.2"/>
+                        </Grid.Shadow>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:ReportDetailPageViewModel}},Path=TapItemCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+                        <Image Source="detail_frame.svg" Aspect="AspectFit"/>
+                        <Grid Margin="12,10">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:ReportDetailPageViewModel}},Path=TapItemCommand}"
+                                CommandParameter="{Binding .}"/>
+                            </Grid.GestureRecognizers>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0" >
+                                <Image Source="person.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Label FontSize="12" Text="{Binding patfullname}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <StackLayout Grid.Row="2" Grid.Column="0" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                                <Image Source="document.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Label FontSize="12" Text="{Binding referno}" TextColor="{StaticResource Black}" VerticalOptions="Center"  LineBreakMode="TailTruncation" HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+
+                            <Label Grid.Row="0" Grid.Column="2" FontSize="12" Text="{Binding version}" VerticalOptions="Center" HorizontalOptions="Fill"/>
+                            <HorizontalStackLayout Grid.Row="2" Grid.Column="2" HorizontalOptions="Fill">
+                                <Image Source="calendar.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Label FontSize="12"  Text="{Binding reportdateFormat}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+        <!--<ActivityIndicator 
+            HorizontalOptions="Center" VerticalOptions="Center" 
+            WidthRequest="100" HeightRequest="100" Color="Pink"
+            IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}">
+        </ActivityIndicator>-->
+
+    </Grid>
+
+</ContentPage>

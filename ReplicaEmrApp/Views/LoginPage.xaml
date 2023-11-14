@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Page Title"
+             x:Class="ReplicaEmrApp.Views.LoginPage"
+             xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
+             x:DataType="viewModel:LoginPageViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="50,0">
+        <VerticalStackLayout VerticalOptions="Center">
+            <Image Source="exentric_logo.svg" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
+            <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,28,0,0"
+               FontSize="18" TextColor="#000" Text="耀瑄科技"/>
+            <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,12,0,0"
+               FontSize="24" FontAttributes="Bold" TextColor="#000" Text="電子病歷行動簽章"/>
+            <Label HorizontalOptions="Center"  VerticalOptions="Center" 
+               FontSize="24" FontAttributes="Bold" TextColor="#000" Text="EMR APP"/>
+            <Border Margin="0,28,0,0" BackgroundColor="White" StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="100"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                </Border.Shadow>
+                <Entry Text="{Binding Account}" Margin="12,0"
+                   BackgroundColor="White" Placeholder="帳號" 
+                   HorizontalOptions="Fill"/>
+            </Border>
+            <Border Margin="0,20,0,0" BackgroundColor="White" StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="100"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                </Border.Shadow>
+                <Entry Text="{Binding Password}" Margin="12,0" 
+                   BackgroundColor="White" Placeholder="密碼" 
+                   HorizontalOptions="Fill"/>
+            </Border>
+            <Border Margin="0,20,0,0" BackgroundColor="White" StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="100"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                </Border.Shadow>
+                <Entry Text="" Margin="12,0"
+               BackgroundColor="White" Placeholder="PIN碼" 
+               HorizontalOptions="Fill"/>
+            </Border>
+            <Grid Margin="0,20,0,0">
+                <HorizontalStackLayout VerticalOptions="Center">
+                    <Label Text="記住帳密？"/>
+                    <Label Text="(公用手機請勿記住)" TextColor="{StaticResource Primary}"/>
+                </HorizontalStackLayout>
+                <Switch OnColor="#34C759"/>
+            </Grid>
+            <Button Text="登入" Margin="0,30,0,0" CornerRadius="100"
+                HeightRequest="37" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
+                Command="{Binding DoLoginCommand}">
+                <Button.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                </Button.Shadow>
+            </Button>
+            <Label Text="{Binding ErrorMessage}" FontSize="15" Margin="0,20" TextColor="Red" IsVisible="{Binding IsError}"/>
+        </VerticalStackLayout>
+        
+        <Label HorizontalOptions="Center"  VerticalOptions="End"  Margin="0,0,0,20"
+               FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Black}" Text="{Binding Version}"/>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy} " 
+                           HorizontalOptions="Center" VerticalOptions="Center" 
+                           WidthRequest="100" HeightRequest="100"/>
+
+    </Grid>
+
+
+</ContentPage>
