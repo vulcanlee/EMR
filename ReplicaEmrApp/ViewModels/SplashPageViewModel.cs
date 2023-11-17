@@ -45,7 +45,8 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         try
         {
-            List<ExceptionRecord> datas = StorageJSONService<List<ExceptionRecord>>.ReadFromFileAsync("data", "ExceptionRecord.json").Result;
+            List<ExceptionRecord> datas =await StorageJSONService<List<ExceptionRecord>>
+                .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
             if (datas != null && datas.Count > 0)
             {
                 await exceptionService.UploadAsync(datas);
@@ -54,10 +55,11 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+
         }
 
-        GlobalObject gObject = await StorageJSONService<GlobalObject>.ReadFromFileAsync("data", "GlobalObject.json");
+        GlobalObject gObject = await StorageJSONService<GlobalObject>
+            .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
         if (gObject == null || string.IsNullOrEmpty(gObject.JSESSIONID))
         {
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);

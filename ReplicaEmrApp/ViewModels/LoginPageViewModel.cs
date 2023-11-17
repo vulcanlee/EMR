@@ -67,7 +67,8 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
             if (loginStatus)
             {
                 await reportCodeService.GetAsync();
-                await StorageJSONService<GlobalObject>.WriteToDataFileAsync("data", "GlobalObject.json",globalObject);
+                await StorageJSONService<GlobalObject>
+                    .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename, globalObject);
 
                 await navigationService.NavigateAsync($"/MDPage/NaviPage/HomePage");
 

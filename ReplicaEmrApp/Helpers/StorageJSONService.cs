@@ -22,7 +22,9 @@ namespace ReplicaEmrApp.Helpers
             try
             {
                 tempStr = await StorageUtility.ReadFromDataFileAsync(directoryName, fileName);
-                loadedFile = JsonConvert.DeserializeObject<T>(tempStr);
+                var temploadedFile = JsonConvert.DeserializeObject<T>(tempStr);
+                if (temploadedFile != null)
+                    loadedFile = temploadedFile;
             }
             catch
             {

@@ -65,8 +65,9 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     public async Task DoLogoutAsync()
     {
         globalObject.CleanUp();
-        await StorageJSONService<GlobalObject>.WriteToDataFileAsync("data", "GlobalObject.json",
-    globalObject);
+        await StorageJSONService<GlobalObject>
+            .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
+            globalObject);
 
         bool result = await dialogService.DisplayAlertAsync("確定要登出嗎?", "登出", "確定", "取消");
 

@@ -23,12 +23,18 @@ public static class MauiProgram
             exceptionRecord.Version = "MAUI";
             exceptionRecord.UserId = "MAUI";
 
-            var datas = StorageJSONService<List<ExceptionRecord>>.ReadFromFileAsync("data", "ExceptionRecord.json").Result;
-            if(datas == null)
-                datas = new List<ExceptionRecord>();
-            datas.Add(exceptionRecord);
-            StorageJSONService<List<ExceptionRecord>>.WriteToDataFileAsync("data", "ExceptionRecord.json", datas).Wait();
+            var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            Task.Run(() =>
+            {
+                List<ExceptionRecord> datas = null;
+                var task = StorageJSONService<List<ExceptionRecord>>
+                .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename).Result;
 
+                datas.Add(exceptionRecord);
+
+                StorageJSONService<List<ExceptionRecord>>
+                .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
+            }).Wait();
         };
 
         var builder = MauiApp.CreateBuilder();
