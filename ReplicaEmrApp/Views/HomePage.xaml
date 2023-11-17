@@ -30,8 +30,10 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="76"/>
         </Grid.RowDefinitions>
-        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
-            <CollectionView ItemsSource="{Binding UnSignItems}" SelectedItem="{Binding SelectedItem}">
+        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}"
+                    Margin="0,20,0,0" >
+            <CollectionView ItemsSource="{Binding UnSignItems}" SelectedItem="{Binding SelectedItem}"
+                            >
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:UnSignItem">
                         <Border Margin="20,0,20,16">
