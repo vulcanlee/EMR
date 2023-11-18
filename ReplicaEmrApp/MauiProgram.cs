@@ -42,14 +42,13 @@ public static class MauiProgram
 
 
         var builder = MauiApp.CreateBuilder();
-        //builder.Services.AddTransient(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
-        //builder.Services.AddTransient(typeof(IStorageUtility), typeof(StorageUtility));
         builder
             .UseMauiApp<App>()
             .UsePrism(prism =>
             {
                 prism.RegisterTypes(container =>
                 {
+                    container.RegisterSingleton<CurrentDeviceInformationService>();
                     container.RegisterSingleton<GlobalObject>();
                     container.Register(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
                     container.Register(typeof(IStorageUtility), typeof(StorageUtility));

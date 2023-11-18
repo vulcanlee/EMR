@@ -18,6 +18,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     private readonly ExceptionService exceptionService;
     private readonly IStorageJSONService<List<ExceptionRecord>> storageJSONService;
     private readonly IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService;
+    private readonly CurrentDeviceInformationService currentDeviceInformationService;
     #endregion
 
     #region Property Member
@@ -27,13 +28,15 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     public SplashPageViewModel(INavigationService navigationService, GlobalObject globalObject,
         ExceptionService exceptionService,
         IStorageJSONService<List<ExceptionRecord>> storageJSONService,
-        IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService)
+        IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService,
+        CurrentDeviceInformationService currentDeviceInformationService)
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
         this.exceptionService = exceptionService;
         this.storageJSONService = storageJSONService;
         this.storageJSONOfGlobalObjectService = storageJSONOfGlobalObjectService;
+        this.currentDeviceInformationService = currentDeviceInformationService;
     }
     #endregion
 
@@ -49,9 +52,10 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
         globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        currentDeviceInformationService.Reset();
         try
         {
-            List<ExceptionRecord> datas =await storageJSONService
+            List<ExceptionRecord> datas = await storageJSONService
                 .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
             if (datas != null && datas.Count > 0)
             {
@@ -68,12 +72,13 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
             .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
         if (gObject == null || string.IsNullOrEmpty(gObject.JSESSIONID))
         {
-            await Task.Delay(1000);
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
         else
         {
             globalObject.Copy(gObject, globalObject);
+            currentDeviceInformationService.CurrentDeviceInformation
+                .Account = gObject.UserId;
             await navigationService.NavigateAsync(MagicValueHelper.HomePage);
         }
 

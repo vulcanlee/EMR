@@ -21,28 +21,5 @@ namespace ReplicaEmrApp.Models
         public string Idiom { get; set; } = string.Empty;
         public string DeviceType { get; set; } = string.Empty;
 
-        public void Clear()
-        {
-            Account = string.Empty;
-            Password = string.Empty;
-            MauiVersion = string.Empty;
-            DeviceId = string.Empty;
-            DeviceName = string.Empty;
-            Model = string.Empty;
-            Manufacturer = string.Empty;
-            VersionString = string.Empty;
-            Platform = string.Empty;
-            Idiom = string.Empty;
-            DeviceType = string.Empty;
-
-            MauiVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            DeviceName = DeviceInfo.Current.Name;
-            Model = DeviceInfo.Current.Model;
-            Manufacturer = DeviceInfo.Current.Manufacturer;
-            VersionString = DeviceInfo.Current.VersionString;
-            Platform = DeviceInfo.Current.Platform.ToString();
-            Idiom = DeviceInfo.Current.Idiom.ToString();
-            DeviceType = DeviceInfo.Current.DeviceType.ToString();
-        }
     }
 }

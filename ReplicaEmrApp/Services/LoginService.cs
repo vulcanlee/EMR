@@ -15,11 +15,14 @@ public class LoginService
 {
     private readonly GlobalObject globalObject;
     private readonly ReportCodeService reportCodeService;
+    private readonly CurrentDeviceInformationService currentDeviceInformationService;
 
-    public LoginService(GlobalObject globalObject,ReportCodeService reportCodeService)
+    public LoginService(GlobalObject globalObject,ReportCodeService reportCodeService,
+        CurrentDeviceInformationService currentDeviceInformationService)
     {
         this.globalObject = globalObject;
         this.reportCodeService = reportCodeService;
+        this.currentDeviceInformationService = currentDeviceInformationService;
     }
     public async Task<bool> LoginAsync(string username, string password)
     {
@@ -58,6 +61,8 @@ public class LoginService
                     globalObject.JSESSIONID = cookieValue;
                     globalObject.UserId = loginResponseDto.userid;
                     globalObject.UserName = loginResponseDto.username;
+                    currentDeviceInformationService.CurrentDeviceInformation
+                        .Account = globalObject.UserId;
                     result = true;
                 }
             }

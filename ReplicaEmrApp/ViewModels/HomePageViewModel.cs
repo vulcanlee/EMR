@@ -19,6 +19,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     private readonly ReportCodeService reportCodeService;
     private readonly IPageDialogService dialogService;
     private readonly IStorageJSONService<GlobalObject> storageJSONService;
+    private readonly CurrentDeviceInformationService currentDeviceInformationService;
     #endregion
 
     #region Property Member
@@ -35,9 +36,10 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     #endregion
 
     #region Constructor
-    public HomePageViewModel(INavigationService navigationService,GlobalObject globalObject,ReportDetailService reportDetailService,
-        IEventAggregator eventAggregator,ReportCodeService reportCodeService,
-        IPageDialogService dialogService, IStorageJSONService<GlobalObject> storageJSONService)
+    public HomePageViewModel(INavigationService navigationService, GlobalObject globalObject, ReportDetailService reportDetailService,
+        IEventAggregator eventAggregator, ReportCodeService reportCodeService,
+        IPageDialogService dialogService, IStorageJSONService<GlobalObject> storageJSONService,
+        CurrentDeviceInformationService currentDeviceInformationService)
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
@@ -46,6 +48,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
         this.reportCodeService = reportCodeService;
         this.dialogService = dialogService;
         this.storageJSONService = storageJSONService;
+        this.currentDeviceInformationService = currentDeviceInformationService;
     }
     #endregion
 
@@ -68,15 +71,15 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     [RelayCommand]
     public async Task DoLogoutAsync()
     {
-        globalObject.CleanUp();
-        await storageJSONService
-            .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
-            globalObject);
-
         bool result = await dialogService.DisplayAlertAsync("確定要登出嗎?", "登出", "確定", "取消");
 
         if (result)
         {
+            globalObject.CleanUp();
+            await storageJSONService
+                .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
+                globalObject);
+            currentDeviceInformationService.CurrentDeviceInformation.Account = string.Empty;
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
     }
@@ -84,7 +87,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     [RelayCommand]
     public void DoException()
     {
-       throw new Exception("Test Exception");
+        throw new Exception("Test Exception");
     }
     #endregion
 
