@@ -15,6 +15,13 @@ namespace ReplicaEmrApp.Services;
 
 public class ExceptionService
 {
+    private readonly IStorageJSONService<List<ExceptionRecord>> storageJSONService;
+
+    public ExceptionService(IStorageJSONService<List<ExceptionRecord>> storageJSONService)
+    {
+        this.storageJSONService = storageJSONService;
+    }
+
     public async Task UploadAsync(List<ExceptionRecord> exceptionRecords)
     {
 
@@ -29,8 +36,9 @@ public class ExceptionService
         if (response.IsSuccessStatusCode)
         {
             exceptionRecords.Clear();
-            await StorageJSONService<List<ExceptionRecord>>
-                .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, exceptionRecords);
+            await storageJSONService
+                .WriteToDataFileAsync(MagicValueHelper.DataPath,
+                MagicValueHelper.ExceptionRecordFilename, exceptionRecords);
         }
         
     }

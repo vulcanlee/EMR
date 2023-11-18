@@ -9,7 +9,7 @@ namespace ReplicaEmrApp.Helpers
     public class MagicValueHelper
     {
         #region String
-        public const string SplashPage = "/SplashPage";
+        public const string SplashPage = "SplashPage";
         public const string LoginPage = "/LoginPage";
         public const string HomePage = $"/NaviPage/HomePage";
         public const string ReportDetailPage = "ReportDetailPage";

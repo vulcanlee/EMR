@@ -12,7 +12,7 @@ namespace ReplicaEmrApp.Helpers
         Task WriteToDataFileAsync(string directoryName, string fileName, T data);
     }
 
-    public class StorageJSONService<T>
+    public class StorageJSONService<T>: IStorageJSONService<T>
     {
         private readonly IStorageUtility storageUtility;
 

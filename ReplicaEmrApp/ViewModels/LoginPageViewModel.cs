@@ -14,6 +14,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     private readonly LoginService loginService;
     private readonly GlobalObject globalObject;
     private readonly ReportCodeService reportCodeService;
+    private readonly IStorageJSONService<GlobalObject> storageJSONService;
     #endregion
 
     #region Property Member
@@ -39,12 +40,13 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     #region Constructor
     public LoginPageViewModel(INavigationService navigationService,
         LoginService loginService, GlobalObject globalObject,
-        ReportCodeService reportCodeService)
+        ReportCodeService reportCodeService, IStorageJSONService<GlobalObject> storageJSONService)
     {
         this.navigationService = navigationService;
         this.loginService = loginService;
         this.globalObject = globalObject;
         this.reportCodeService = reportCodeService;
+        this.storageJSONService = storageJSONService;
 #if DEBUG
         account = "admin";
         password = "cirtnexe0845";
@@ -67,7 +69,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
             if (loginStatus)
             {
                 await reportCodeService.GetAsync();
-                await StorageJSONService<GlobalObject>
+                await storageJSONService
                     .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename, globalObject);
 
                 await navigationService.NavigateAsync(MagicValueHelper.HomePage);

@@ -14,7 +14,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        IStorageJSONService<List<ExceptionRecord>> storageJSONService=null;
+        IStorageJSONService<List<ExceptionRecord>> storageJSONService = null;
 
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
@@ -42,34 +42,35 @@ public static class MauiProgram
 
 
         var builder = MauiApp.CreateBuilder();
+        //builder.Services.AddTransient(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
+        //builder.Services.AddTransient(typeof(IStorageUtility), typeof(StorageUtility));
         builder
             .UseMauiApp<App>()
             .UsePrism(prism =>
             {
                 prism.RegisterTypes(container =>
-                      {
-                          container.RegisterSingleton<GlobalObject>();
-                          container.Register(typeof(IStorageJSONService<>), 
-                              typeof(StorageJSONService<>));
-                          container.Register(typeof(IStorageUtility), 
-                              typeof(StorageUtility));
-                          container.Register<LoginService>();
-                          container.Register<ReportCodeService>();
-                          container.Register<ReportDetailService>();
-                          container.Register<ExceptionService>();
-                          container.RegisterForNavigation<MainPage, MainPageViewModel>();
-                          container.RegisterForNavigation<SplashPage, SplashPageViewModel>();
-                          container.RegisterForNavigation<LoginPage, LoginPageViewModel>();
-                          container.RegisterForNavigation<HomePage, HomePageViewModel>();
-                          container.RegisterForNavigation<ReportDetailPage, ReportDetailPageViewModel>();
-                          container.RegisterForNavigation<ReportContentPage, ReportContentPageViewModel>();
-                          container.RegisterForNavigation<NaviPage, NaviPageViewModel>();
-                          container.RegisterForNavigation<MDPage, MDPageViewModel>();
-                      })
+                {
+                    container.RegisterSingleton<GlobalObject>();
+                    container.Register(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
+                    container.Register(typeof(IStorageUtility), typeof(StorageUtility));
+                    container.Register<LoginService>();
+                    container.Register<ReportCodeService>();
+                    container.Register<ReportDetailService>();
+                    container.Register<ExceptionService>();
+                    container.RegisterForNavigation<MyFirstPage, MyFirstPageViewModel>();
+                    container.RegisterForNavigation<MainPage, MainPageViewModel>();
+                    container.RegisterForNavigation<SplashPage, SplashPageViewModel>();
+                    container.RegisterForNavigation<LoginPage, LoginPageViewModel>();
+                    container.RegisterForNavigation<HomePage, HomePageViewModel>();
+                    container.RegisterForNavigation<ReportDetailPage, ReportDetailPageViewModel>();
+                    container.RegisterForNavigation<ReportContentPage, ReportContentPageViewModel>();
+                    container.RegisterForNavigation<NaviPage, NaviPageViewModel>();
+                    container.RegisterForNavigation<MDPage, MDPageViewModel>();
+                })
                      .OnInitialized(() =>
-                      {
-                          // Do some initializations here
-                      })
+                     {
+                         // Do some initializations here
+                     })
                      .OnAppStart(async navigationService =>
                      {
                          // Navigate to First page of this App
@@ -90,8 +91,8 @@ public static class MauiProgram
 
         var app = builder.Build();
         storageJSONService = app.Services
-            .GetService(typeof(IStorageJSONService<List<ExceptionRecord>>)) 
+            .GetService(typeof(IStorageJSONService<List<ExceptionRecord>>))
             as IStorageJSONService<List<ExceptionRecord>>;
-        return builder.Build();
+        return app;
     }
 }

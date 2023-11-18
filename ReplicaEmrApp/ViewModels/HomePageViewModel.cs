@@ -5,6 +5,7 @@ using ReplicaEmrApp.Events;
 using ReplicaEmrApp.Helpers;
 using ReplicaEmrApp.Models;
 using ReplicaEmrApp.Services;
+using ShareResource.Models;
 
 namespace ReplicaEmrApp.ViewModels;
 
@@ -17,6 +18,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     private readonly IEventAggregator eventAggregator;
     private readonly ReportCodeService reportCodeService;
     private readonly IPageDialogService dialogService;
+    private readonly IStorageJSONService<GlobalObject> storageJSONService;
     #endregion
 
     #region Property Member
@@ -34,7 +36,8 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
 
     #region Constructor
     public HomePageViewModel(INavigationService navigationService,GlobalObject globalObject,ReportDetailService reportDetailService,
-        IEventAggregator eventAggregator,ReportCodeService reportCodeService,IPageDialogService dialogService)
+        IEventAggregator eventAggregator,ReportCodeService reportCodeService,
+        IPageDialogService dialogService, IStorageJSONService<GlobalObject> storageJSONService)
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
@@ -42,6 +45,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
         this.eventAggregator = eventAggregator;
         this.reportCodeService = reportCodeService;
         this.dialogService = dialogService;
+        this.storageJSONService = storageJSONService;
     }
     #endregion
 
@@ -65,7 +69,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     public async Task DoLogoutAsync()
     {
         globalObject.CleanUp();
-        await StorageJSONService<GlobalObject>
+        await storageJSONService
             .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
             globalObject);
 

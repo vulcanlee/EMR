@@ -16,6 +16,8 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     private readonly INavigationService navigationService;
     private readonly GlobalObject globalObject;
     private readonly ExceptionService exceptionService;
+    private readonly IStorageJSONService<List<ExceptionRecord>> storageJSONService;
+    private readonly IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService;
     #endregion
 
     #region Property Member
@@ -23,11 +25,15 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     #region Constructor
     public SplashPageViewModel(INavigationService navigationService, GlobalObject globalObject,
-        ExceptionService exceptionService)
+        ExceptionService exceptionService,
+        IStorageJSONService<List<ExceptionRecord>> storageJSONService,
+        IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService)
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
         this.exceptionService = exceptionService;
+        this.storageJSONService = storageJSONService;
+        this.storageJSONOfGlobalObjectService = storageJSONOfGlobalObjectService;
     }
     #endregion
 
@@ -45,7 +51,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         try
         {
-            List<ExceptionRecord> datas =await StorageJSONService<List<ExceptionRecord>>
+            List<ExceptionRecord> datas =await storageJSONService
                 .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
             if (datas != null && datas.Count > 0)
             {
@@ -58,10 +64,11 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
         }
 
-        GlobalObject gObject = await StorageJSONService<GlobalObject>
+        GlobalObject gObject = await storageJSONOfGlobalObjectService
             .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
         if (gObject == null || string.IsNullOrEmpty(gObject.JSESSIONID))
         {
+            await Task.Delay(1000);
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
         else
