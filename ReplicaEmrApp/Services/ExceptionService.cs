@@ -27,7 +27,10 @@ public class ExceptionService
 
         string endpoint = $"{MagicValueHelper.ExceptionRecord}";
 
-        HttpClient client = new HttpClient();
+        HttpClient client = new HttpClient()
+        {
+            Timeout = TimeSpan.FromSeconds(10),
+        };
         var content = new StringContent(JsonConvert
             .SerializeObject(exceptionRecords), Encoding.UTF8, "application/json");
         HttpResponseMessage response = await client

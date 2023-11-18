@@ -5,6 +5,7 @@
              x:Class="ReplicaEmrApp.Views.HomePage"
              xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
              xmlns:model="clr-namespace:ReplicaEmrApp.Models"
+             xmlns:controls="clr-namespace:ReplicaEmrApp.Controls"
              x:DataType="viewModel:HomePageViewModel"
              BackgroundColor="{StaticResource Secondary}">
     <ContentPage.ToolbarItems>
@@ -22,9 +23,8 @@
                      Size="40" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-        
-
     </ContentPage.ToolbarItems>    
+ 
     <Grid Margin="0,0,0,21">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -78,6 +78,18 @@
         </Button>
         <!--<ActivityIndicator IsRunning="{Binding IsBusy}" BackgroundColor="Black" Opacity="0.2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Color="#FF8F40">
         </ActivityIndicator>-->
+
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding RefreshingView}"
+              HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Rectangle BackgroundColor="{StaticResource Black}" 
+                        Opacity="0.5"
+                     HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <controls:RefreshReportStatusView 
+                WidthRequest="333" HeightRequest="203"
+                BindingContext="{Binding RefreshReportStatusViewModel}"
+                VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
     </Grid>
 
 </ContentPage>

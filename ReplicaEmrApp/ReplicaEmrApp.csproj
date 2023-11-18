@@ -74,6 +74,12 @@
 		<ProjectReference Include="..\ShareResource\ShareResource.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Controls\RefreshReportStatusView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionReplicaEmrAppHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

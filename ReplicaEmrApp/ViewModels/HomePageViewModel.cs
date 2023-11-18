@@ -32,7 +32,12 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     [ObservableProperty]
     bool isRefreshing = true;
     [ObservableProperty]
+    bool refreshingView = false;
+    [ObservableProperty]
     bool isBusy = false;
+
+    [ObservableProperty]
+    RefreshReportStatusViewModel refreshReportStatusViewModel = new();
     #endregion
 
     #region Constructor
@@ -98,13 +103,20 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
 
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
-
+        RefreshReportStatusViewModel.Title = "更新報告狀態";
+        RefreshReportStatusViewModel.SubTitle1 = "更新中";
+        RefreshReportStatusViewModel.SubTitle2 = "請稍後";
+        RefreshReportStatusViewModel.Message = "";
+        RefreshReportStatusViewModel.Progress = 0.7;
         await ReloadAsync();
     }
 
     private async Task ReloadAsync()
     {
+        int totalReportCode = globalObject.reportCodes.Count;
+        RefreshReportStatusViewModel.Progress = 0;
         IsBusy = true;
+        RefreshingView = true;
         eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
 
         UnSignItems.Clear();
@@ -118,18 +130,23 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
                 TotalReport = 0
             });
         }
+        int currentCounter = 1;
         Task.Run(async () =>
         {
             foreach (var item in UnSignItems)
             {
+                RefreshReportStatusViewModel.Message = $"更新狀態({currentCounter}/{totalReportCode})";
                 var dto = await reportDetailService.GetAsync(item.ReportCode);
                 item.TotalReport = dto.returnMessage[0].reportCount;
+                RefreshReportStatusViewModel.Progress = (double)currentCounter / totalReportCode;
+                currentCounter++;
             }
         }).ContinueWith(T =>
         {
             UnSignItems = UnSignItems.Where(x => x.TotalReport > 0).ToList();
             IsRefreshing = false;
             IsBusy = false;
+            RefreshingView = false;
             eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
 
 
