@@ -24,21 +24,18 @@
             <Label Margin="0,4,0,0"
                 Text="{Binding SubTitle1}"
                 FontSize="12"
-                FontAttributes="Bold"
                 TextColor="#000000"
                 HorizontalOptions="Center"
                 />
             <Label Margin="0,4,0,0"
                 Text="{Binding SubTitle2}"
                 FontSize="12"
-                FontAttributes="Bold"
                 TextColor="#000000"
                 HorizontalOptions="Center"
                 />
             <Label Margin="0,4,0,0"
                 Text="{Binding Message}"
                 FontSize="12"
-                FontAttributes="Bold"
                 TextColor="#000000"
                 HorizontalOptions="Center"
                 />

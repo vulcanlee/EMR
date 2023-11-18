@@ -13,7 +13,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>ReplicaEmrApp</ApplicationTitle>
+		<ApplicationTitle>行動 EMR</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.replicaemrapp</ApplicationId>
