@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReplicaEmrApp.Helpers;
 
 namespace ReplicaEmrApp.ViewModels;
 
@@ -31,14 +32,14 @@ public partial class MDPageViewModel : ObservableObject, INavigatedAware
 
         if (result)
         {
-            await navigationService.NavigateAsync("/LoginPage");
+            await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
     }
 
     [RelayCommand]
     public async Task DoHomeAsync()
     {
-        await navigationService.NavigateAsync("/MDPage/NaviPage/HomePage");
+        await navigationService.NavigateAsync(MagicValueHelper.HomePage);
     }
     #endregion
 

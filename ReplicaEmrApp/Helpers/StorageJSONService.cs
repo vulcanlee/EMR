@@ -6,22 +6,34 @@ using System.Threading.Tasks;
 
 namespace ReplicaEmrApp.Helpers
 {
+    public interface IStorageJSONService<T>
+    {
+        Task<T> ReadFromFileAsync(string directoryName, string fileName);
+        Task WriteToDataFileAsync(string directoryName, string fileName, T data);
+    }
+
     public class StorageJSONService<T>
     {
+        private readonly IStorageUtility storageUtility;
+
+        public StorageJSONService(IStorageUtility storageUtility)
+        {
+            this.storageUtility = storageUtility;
+        }
 
         /// <summary>
         /// Loads data from a file
         /// </summary>
         /// <param name="fileName">Name of the file to read.</param>
         /// <returns>Data object</returns>
-        public static async Task<T> ReadFromFileAsync(string directoryName, string fileName)
+        public async Task<T> ReadFromFileAsync(string directoryName, string fileName)
         {
             //T loadedFile = default(T);
             T loadedFile = (T)Activator.CreateInstance(typeof(T));
             string tempStr = "";
             try
             {
-                tempStr = await StorageUtility.ReadFromDataFileAsync(directoryName, fileName);
+                tempStr = await storageUtility.ReadFromDataFileAsync(directoryName, fileName);
                 var temploadedFile = JsonConvert.DeserializeObject<T>(tempStr);
                 if (temploadedFile != null)
                     loadedFile = temploadedFile;
@@ -54,12 +66,12 @@ namespace ReplicaEmrApp.Helpers
         /// </summary>
         /// <param name="fileName">Name of the file to write to</param>
         /// <param name="data">The data to save</param>
-        public static async Task WriteToDataFileAsync(string directoryName, string fileName, T data)
+        public async Task WriteToDataFileAsync(string directoryName, string fileName, T data)
         {
             try
             {
                 string output = JsonConvert.SerializeObject(data);
-                await StorageUtility.WriteToDataFileAsync(directoryName, fileName, output);
+                await storageUtility.WriteToDataFileAsync(directoryName, fileName, output);
             }
             catch(Exception e)
             {

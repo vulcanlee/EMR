@@ -14,6 +14,8 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        IStorageJSONService<List<ExceptionRecord>> storageJSONService=null;
+
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
             var exceptionRecord = new ExceptionRecord();
@@ -26,26 +28,31 @@ public static class MauiProgram
             var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             Task.Run(() =>
             {
-                List<ExceptionRecord> datas = null;
-                var task = StorageJSONService<List<ExceptionRecord>>
-                .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename).Result;
+                List<ExceptionRecord> datas = storageJSONService
+                .ReadFromFileAsync(MagicValueHelper.DataPath,
+                MagicValueHelper.ExceptionRecordFilename).Result;
 
                 datas.Add(exceptionRecord);
 
-                StorageJSONService<List<ExceptionRecord>>
+                storageJSONService
                 .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
             }).Wait();
         };
+
+
 
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
             .UsePrism(prism =>
             {
-
                 prism.RegisterTypes(container =>
                       {
                           container.RegisterSingleton<GlobalObject>();
+                          container.Register(typeof(IStorageJSONService<>), 
+                              typeof(StorageJSONService<>));
+                          container.Register(typeof(IStorageUtility), 
+                              typeof(StorageUtility));
                           container.Register<LoginService>();
                           container.Register<ReportCodeService>();
                           container.Register<ReportDetailService>();
@@ -67,7 +74,7 @@ public static class MauiProgram
                      {
                          // Navigate to First page of this App
                          var result = await navigationService
-                         .NavigateAsync("SplashPage");
+                         .NavigateAsync(MagicValueHelper.SplashPage);
                          if (!result.Success)
                          {
                              System.Diagnostics.Debugger.Break();
@@ -81,6 +88,10 @@ public static class MauiProgram
                 fonts.AddFont("materialdesignicons-webfont.ttf", "material");
             });
 
+        var app = builder.Build();
+        storageJSONService = app.Services
+            .GetService(typeof(IStorageJSONService<List<ExceptionRecord>>)) 
+            as IStorageJSONService<List<ExceptionRecord>>;
         return builder.Build();
     }
 }

@@ -58,7 +58,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     {
         NavigationParameters parameters = new();
         parameters.Add("UnsignReport", unSignItem);
-        await navigationService.NavigateAsync("ReportDetailPage", parameters);
+        await navigationService.NavigateAsync(MagicValueHelper.ReportDetailPage, parameters);
     }
 
     [RelayCommand]
@@ -73,7 +73,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
 
         if (result)
         {
-            await navigationService.NavigateAsync("/LoginPage");
+            await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
     }
 

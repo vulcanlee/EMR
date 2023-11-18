@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace ReplicaEmrApp.Helpers
 {
+    public interface IStorageUtility
+    {
+        Task WriteToDataFileAsync(string folderName, string filename, string content);
+        Task<string> ReadFromDataFileAsync(string folderName, string filename);
+    }
+
     /// <summary>
     /// Storage 相關的 API
     /// http://www.nudoq.org/#!/Packages/PCLStorage/PCLStorage/FileSystem
     /// </summary>
-    public class StorageUtility
+    public class StorageUtility: IStorageUtility
     {
         /// <summary>
         /// 將所指定的字串寫入到指定目錄的檔案內
@@ -20,7 +26,7 @@ namespace ReplicaEmrApp.Helpers
         /// <param name="filename">檔案名稱</param>
         /// <param name="content">所要寫入的文字內容</param> 
         /// <returns></returns>
-        public static async Task WriteToDataFileAsync(string folderName, string filename, string content)
+        public async Task WriteToDataFileAsync(string folderName, string filename, string content)
         {
             string rootPath = FileSystem.AppDataDirectory;
 
@@ -74,7 +80,7 @@ namespace ReplicaEmrApp.Helpers
         /// <param name="folderName">目錄名稱</param>
         /// <param name="filename">檔案名稱</param>
         /// <returns>文字內容</returns>
-        public static async Task<string> ReadFromDataFileAsync(string folderName, string filename)
+        public async Task<string> ReadFromDataFileAsync(string folderName, string filename)
         {
             string content = "";
             string rootPath = FileSystem.AppDataDirectory;

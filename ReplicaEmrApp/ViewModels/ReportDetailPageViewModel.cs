@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReplicaEmrApp.Dto;
+using ReplicaEmrApp.Helpers;
 using ReplicaEmrApp.Models;
 using ReplicaEmrApp.Services;
 
@@ -45,7 +46,7 @@ public partial class ReportDetailPageViewModel : ObservableObject, INavigatedAwa
         NavigationParameters parameters = new();
         parameters.Add("ReportData", reportData);
         parameters.Add("ReportCode", reportCode);
-        await navigationService.NavigateAsync("ReportContentPage", parameters);
+        await navigationService.NavigateAsync(MagicValueHelper.ReportContentPage, parameters);
     }
     #endregion
 

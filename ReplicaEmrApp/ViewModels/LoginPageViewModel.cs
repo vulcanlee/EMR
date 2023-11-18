@@ -70,7 +70,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
                 await StorageJSONService<GlobalObject>
                     .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename, globalObject);
 
-                await navigationService.NavigateAsync($"/MDPage/NaviPage/HomePage");
+                await navigationService.NavigateAsync(MagicValueHelper.HomePage);
 
             }
             else
