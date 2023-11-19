@@ -62,7 +62,7 @@
                 <Switch OnColor="#34C759"/>
             </Grid>
             <Button Text="登入" Margin="0,30,0,0" CornerRadius="100"
-                HeightRequest="37" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
+                HeightRequest="40" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
                 Command="{Binding DoLoginCommand}">
                 <Button.Shadow>
                     <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
