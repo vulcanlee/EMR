@@ -86,7 +86,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
             await storageJSONService
                 .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
                 globalObject);
-            currentDeviceInformationService.CurrentDeviceInformation.Account = string.Empty;
+            currentDeviceInformationService.Current.Account = string.Empty;
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
         }
     }

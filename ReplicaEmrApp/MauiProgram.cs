@@ -14,20 +14,22 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        IStorageJSONService<List<ExceptionRecord>> storageJSONService = null;
-
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
+            var currentDeviceInformationService = ServiceProviderHelper.Current
+            .GetService<CurrentDeviceInformationService>();
             var exceptionRecord = new ExceptionRecord();
             exceptionRecord.Exception = e.ExceptionObject.ToString();
-            exceptionRecord.Platform = "MAUI";
-            exceptionRecord.Model = "MAUI";
-            exceptionRecord.Version = "MAUI";
-            exceptionRecord.UserId = "MAUI";
+            exceptionRecord.Platform = currentDeviceInformationService.Current.Platform;
+            exceptionRecord.Model = currentDeviceInformationService.Current.Model;
+            exceptionRecord.Version = currentDeviceInformationService.Current.VersionString;
+            exceptionRecord.UserId = currentDeviceInformationService.Current.Account;
 
             var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             Task.Run(() =>
             {
+               var storageJSONService = ServiceProviderHelper.Current
+                .GetService<IStorageJSONService<List<ExceptionRecord>>>();
                 List<ExceptionRecord> datas = storageJSONService
                 .ReadFromFileAsync(MagicValueHelper.DataPath,
                 MagicValueHelper.ExceptionRecordFilename).Result;
@@ -90,9 +92,6 @@ public static class MauiProgram
             });
 
         var app = builder.Build();
-        storageJSONService = app.Services
-            .GetService(typeof(IStorageJSONService<List<ExceptionRecord>>))
-            as IStorageJSONService<List<ExceptionRecord>>;
         return app;
     }
 }

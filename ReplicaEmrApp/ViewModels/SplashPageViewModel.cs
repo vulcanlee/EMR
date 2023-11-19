@@ -77,7 +77,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         else
         {
             globalObject.Copy(gObject, globalObject);
-            currentDeviceInformationService.CurrentDeviceInformation
+            currentDeviceInformationService.Current
                 .Account = gObject.UserId;
             await navigationService.NavigateAsync(MagicValueHelper.HomePage);
         }

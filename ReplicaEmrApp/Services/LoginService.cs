@@ -61,7 +61,7 @@ public class LoginService
                     globalObject.JSESSIONID = cookieValue;
                     globalObject.UserId = loginResponseDto.userid;
                     globalObject.UserName = loginResponseDto.username;
-                    currentDeviceInformationService.CurrentDeviceInformation
+                    currentDeviceInformationService.Current
                         .Account = globalObject.UserId;
                     result = true;
                 }
