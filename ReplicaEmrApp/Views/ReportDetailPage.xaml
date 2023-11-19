@@ -15,7 +15,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Text="{Binding Summary}" FontSize="12" TextColor="#6C6C6C" VerticalOptions="Center" HorizontalOptions="Start"/>
-        <CollectionView Grid.Row="2" ItemsSource="{Binding ReportDatas}" IsEnabled="False">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding ReportDatas}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="dto:ReportData">
                     <Grid Margin="0,0,0,12">
