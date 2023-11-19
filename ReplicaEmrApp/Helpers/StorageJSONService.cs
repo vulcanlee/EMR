@@ -29,11 +29,13 @@ namespace ReplicaEmrApp.Helpers
         public async Task<T> ReadFromFileAsync(string directoryName, string fileName)
         {
             //T loadedFile = default(T);
+            var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             T loadedFile = (T)Activator.CreateInstance(typeof(T));
             string tempStr = "";
             try
             {
-                tempStr = await storageUtility.ReadFromDataFileAsync(directoryName, fileName);
+                tempStr = await storageUtility.ReadFromDataFileAsync(directoryName, fileName)
+                    .ConfigureAwait(false);
                 var temploadedFile = JsonConvert.DeserializeObject<T>(tempStr);
                 if (temploadedFile != null)
                     loadedFile = temploadedFile;
@@ -71,7 +73,8 @@ namespace ReplicaEmrApp.Helpers
             try
             {
                 string output = JsonConvert.SerializeObject(data);
-                await storageUtility.WriteToDataFileAsync(directoryName, fileName, output);
+                await storageUtility.WriteToDataFileAsync(directoryName, fileName, output)
+                    .ConfigureAwait(false);
             }
             catch(Exception e)
             {

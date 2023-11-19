@@ -24,20 +24,31 @@ public static class MauiProgram
             exceptionRecord.Model = currentDeviceInformationService.Current.Model;
             exceptionRecord.Version = currentDeviceInformationService.Current.VersionString;
             exceptionRecord.UserId = currentDeviceInformationService.Current.Account;
+            exceptionRecord.CreateAt = DateTime.Now;
 
-            var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            var storageJSONService = ServiceProviderHelper.Current
+            .GetService<IStorageJSONService<List<ExceptionRecord>>>();
+            List<ExceptionRecord> datas = storageJSONService
+            .ReadFromFileAsync(MagicValueHelper.DataPath,
+            MagicValueHelper.ExceptionRecordFilename).Result;
+
+            datas.Add(exceptionRecord);
+
+            storageJSONService
+            .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
+
             Task.Run(() =>
             {
-               var storageJSONService = ServiceProviderHelper.Current
-                .GetService<IStorageJSONService<List<ExceptionRecord>>>();
-                List<ExceptionRecord> datas = storageJSONService
-                .ReadFromFileAsync(MagicValueHelper.DataPath,
-                MagicValueHelper.ExceptionRecordFilename).Result;
+                //var storageJSONService = ServiceProviderHelper.Current
+                // .GetService<IStorageJSONService<List<ExceptionRecord>>>();
+                //List<ExceptionRecord> datas = storageJSONService
+                //.ReadFromFileAsync(MagicValueHelper.DataPath,
+                //MagicValueHelper.ExceptionRecordFilename).Result;
 
-                datas.Add(exceptionRecord);
+                //datas.Add(exceptionRecord);
 
-                storageJSONService
-                .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
+                //storageJSONService
+                //.WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
             }).Wait();
         };
 

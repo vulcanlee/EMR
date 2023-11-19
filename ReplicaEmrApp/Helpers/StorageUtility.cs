@@ -62,7 +62,8 @@ namespace ReplicaEmrApp.Helpers
                     FileMode.Create, FileAccess.Write, FileShare.None,
                     bufferSize: 4096, useAsync: true))
                 {
-                    await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+                    await sourceStream.WriteAsync(encodedText, 0, encodedText.Length)
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -119,8 +120,11 @@ namespace ReplicaEmrApp.Helpers
 
                     byte[] buffer = new byte[0x1000];
                     int numRead;
-                    while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                    var threaid = System.Threading.Thread.CurrentThread.ManagedThreadId;
+                    while ((numRead = await sourceStream
+                        .ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0)
                     {
+                        threaid = System.Threading.Thread.CurrentThread.ManagedThreadId;
                         string text = Encoding.UTF8.GetString(buffer, 0, numRead);
                         sb.Append(text);
                     }
