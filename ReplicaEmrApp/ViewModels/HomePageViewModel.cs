@@ -110,7 +110,10 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
         RefreshReportStatusViewModel.SubTitle2 = "請稍後";
         RefreshReportStatusViewModel.Message = "";
         RefreshReportStatusViewModel.Progress = 0.7;
-        await ReloadAsync();
+        if(parameters.GetNavigationMode() == Prism.Navigation.NavigationMode.New)
+        {
+            await ReloadAsync();
+        }
     }
 
     private async Task ReloadAsync()

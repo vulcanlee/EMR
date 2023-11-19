@@ -29,7 +29,14 @@ namespace EmrRestApi.Controllers
         {
             exceptionRecord.ForEach(x =>
             {
+                Console.WriteLine($"UserId : {x.UserId}");
+                Console.WriteLine($"Platform : {x.Platform}");
+                Console.WriteLine($"Model : {x.Model}");
+                Console.WriteLine($"Version : {x.Version}");
+
                 Console.WriteLine($"{x.Exception}");
+                Console.WriteLine();
+                Console.WriteLine();
             });
         }
 
