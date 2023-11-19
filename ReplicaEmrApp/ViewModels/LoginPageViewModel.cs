@@ -57,6 +57,11 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     #region Method Member
     #region Command Method
     [RelayCommand]
+    async Task DoSettingAsync()
+    {
+        await navigationService.NavigateAsync(MagicValueHelper.SettingPage);
+    }
+    [RelayCommand]
     async Task DoLoginAsync()
     {
         IsBusy = true;

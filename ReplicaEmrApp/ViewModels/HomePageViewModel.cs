@@ -30,6 +30,8 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     UnSignItem selectedItem = new();
 
     [ObservableProperty]
+    bool showNavigationPage = true;
+    [ObservableProperty]
     bool isRefreshing = true;
     [ObservableProperty]
     bool refreshingView = false;
@@ -115,6 +117,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     {
         int totalReportCode = globalObject.reportCodes.Count;
         RefreshReportStatusViewModel.Progress = 0;
+        ShowNavigationPage = false;
         IsBusy = true;
         RefreshingView = true;
         eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
@@ -147,9 +150,8 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
             IsRefreshing = false;
             IsBusy = false;
             RefreshingView = false;
+            ShowNavigationPage = true;
             eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
-
-
         });
 
     }

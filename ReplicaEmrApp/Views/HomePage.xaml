@@ -7,7 +7,8 @@
              xmlns:model="clr-namespace:ReplicaEmrApp.Models"
              xmlns:controls="clr-namespace:ReplicaEmrApp.Controls"
              x:DataType="viewModel:HomePageViewModel"
-             BackgroundColor="{StaticResource Secondary}">
+             BackgroundColor="{StaticResource Secondary}"
+             NavigationPage.HasNavigationBar="{Binding ShowNavigationPage}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="登出" Command="{Binding DoLogoutCommand}">
             <ToolbarItem.IconImageSource>

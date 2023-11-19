@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="Page Title"
+             Title="使用者登入"
              x:Class="ReplicaEmrApp.Views.LoginPage"
              xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
              x:DataType="viewModel:LoginPageViewModel"
-             BackgroundColor="{StaticResource Secondary}">
+             BackgroundColor="{StaticResource Secondary}"
+             NavigationPage.HasNavigationBar="False">
 
     <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="50,0">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding DoSettingCommand}"
+                                  NumberOfTapsRequired="2" />
+        </Grid.GestureRecognizers>
         <VerticalStackLayout VerticalOptions="Center">
             <Image Source="exentric_logo.svg" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,28,0,0"

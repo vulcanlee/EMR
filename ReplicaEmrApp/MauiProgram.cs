@@ -56,6 +56,7 @@ public static class MauiProgram
                     container.Register<ReportCodeService>();
                     container.Register<ReportDetailService>();
                     container.Register<ExceptionService>();
+                    container.RegisterForNavigation<SettingPage, SettingPageViewModel>();
                     container.RegisterForNavigation<MyFirstPage, MyFirstPageViewModel>();
                     container.RegisterForNavigation<MainPage, MainPageViewModel>();
                     container.RegisterForNavigation<SplashPage, SplashPageViewModel>();
