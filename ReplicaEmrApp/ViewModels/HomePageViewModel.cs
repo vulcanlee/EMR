@@ -40,6 +40,19 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
 
     [ObservableProperty]
     RefreshReportStatusViewModel refreshReportStatusViewModel = new();
+
+    [ObservableProperty]
+    bool showSignProcessingView = false;
+    [ObservableProperty]
+    SignProcessingViewModel signProcessingViewModel = new();
+    bool isStopSign = false;
+
+    [ObservableProperty]
+    StopSignViewModel stopSignViewModel = new StopSignViewModel();
+    [ObservableProperty]
+    bool showStopSignView = false;
+
+
     #endregion
 
     #region Constructor
@@ -56,6 +69,11 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
         this.dialogService = dialogService;
         this.storageJSONService = storageJSONService;
         this.currentDeviceInformationService = currentDeviceInformationService;
+
+        SignProcessingViewModel.StopViewModelCommand = StopSignProcessingCommand;
+
+        StopSignViewModel.CancelCommand = CancelButtonCommand;
+        StopSignViewModel.StopCommand = StopButtonCommand;
     }
     #endregion
 
@@ -96,6 +114,43 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     {
         throw new Exception("Test Exception");
     }
+
+    [RelayCommand]
+    public async Task SignAllAsync()
+    {
+        ShowNavigationPage = false;
+        ShowSignProcessingView = true;
+        int total = 100;
+        isStopSign = false;
+        for (int i = 0; i < total; i++)
+        {
+            if (isStopSign) break;
+
+            SignProcessingViewModel.Message = $"{i}/{total}";
+            SignProcessingViewModel.Progress = (double)i / total;
+            await Task.Delay(100);
+        }
+        ShowNavigationPage = true;
+        ShowSignProcessingView = false;
+    }
+    [RelayCommand]
+    public void StopSignProcessing()
+    {
+        ShowStopSignView = true;
+    }
+
+    [RelayCommand]
+    public void CancelButton ()
+    {
+        ShowStopSignView = false;
+    }
+
+    [RelayCommand]
+    public void StopButton ()
+    {
+        isStopSign = true;
+        ShowStopSignView = false;
+    }
     #endregion
 
     #region Navigation Event
@@ -103,14 +158,29 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     {
     }
 
+
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
+        //eventAggregator.GetEvent<StopSignEvent>().Subscribe(payload =>
+        //{
+        //    isStopSign = true;
+        //    ShowStopSignView = true;
+        //});
+
+        SignProcessingViewModel.EventAggregator = eventAggregator;
+        SignProcessingViewModel.Title = "檢驗報告";
+        SignProcessingViewModel.SubTitle1 = "簽章執行中";
+        SignProcessingViewModel.SubTitle2 = "(請勿關閉頁面)";
+        SignProcessingViewModel.Message = "60/100";
+        SignProcessingViewModel.Progress = 0.7;
+
+
         RefreshReportStatusViewModel.Title = "更新報告狀態";
         RefreshReportStatusViewModel.SubTitle1 = "更新中";
         RefreshReportStatusViewModel.SubTitle2 = "請稍後";
         RefreshReportStatusViewModel.Message = "";
         RefreshReportStatusViewModel.Progress = 0.7;
-        if(parameters.GetNavigationMode() == Prism.Navigation.NavigationMode.New)
+        if (parameters.GetNavigationMode() == Prism.Navigation.NavigationMode.New)
         {
             await ReloadAsync();
         }
@@ -123,7 +193,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
         ShowNavigationPage = false;
         IsBusy = true;
         RefreshingView = true;
-        eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
+        eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPagePayload { IsOn = !IsBusy });
 
         UnSignItems.Clear();
 
@@ -154,7 +224,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
             IsBusy = false;
             RefreshingView = false;
             ShowNavigationPage = true;
-            eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPAgePayload { IsOn = !IsBusy });
+            eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPagePayload { IsOn = !IsBusy });
         });
 
     }

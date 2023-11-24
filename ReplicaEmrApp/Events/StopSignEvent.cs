@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ReplicaEmrApp.Events
 {
-    public class OnOffNavigationPageEvent : PubSubEvent<OnOffNavigationPagePayload>
+    public class StopSignEvent : PubSubEvent<StopSignPayload>
     {
 
     }
-    public class OnOffNavigationPagePayload
+    public class StopSignPayload
     {
-        public bool IsOn { get; set; } = false;
     }
 }

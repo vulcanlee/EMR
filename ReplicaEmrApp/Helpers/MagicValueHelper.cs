@@ -21,6 +21,7 @@ namespace ReplicaEmrApp.Helpers
         public const string DataPath = $"data";
         public const string ExceptionRecordFilename = $"ExceptionRecord.json";
         public const string GlobalObjectFilename = $"GlobalObject.json";
+        public const string SettingModelFilename = $"SettingModel.json";
         public const string CurrentDeviceInformationFilename = $"CurrentDeviceInformation.json";
         #endregion
     }

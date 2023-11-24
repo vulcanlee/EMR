@@ -17,7 +17,7 @@ public class LoginService
     private readonly ReportCodeService reportCodeService;
     private readonly CurrentDeviceInformationService currentDeviceInformationService;
 
-    public LoginService(GlobalObject globalObject,ReportCodeService reportCodeService,
+    public LoginService(GlobalObject globalObject, ReportCodeService reportCodeService,
         CurrentDeviceInformationService currentDeviceInformationService)
     {
         this.globalObject = globalObject;
@@ -34,7 +34,7 @@ public class LoginService
         HttpClient client = new HttpClient(handler);
         client.BaseAddress = new Uri(@"http://office.exentric.com.tw:8080/webemr");
         HttpResponseMessage response = await client.PostAsync(loginEndpoint, null);
-       
+
         if (response.IsSuccessStatusCode)
         {
             string responseContent = await response.Content.ReadAsStringAsync();

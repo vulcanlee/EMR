@@ -8,10 +8,10 @@ namespace ReplicaEmrApp.Dto
 {
     public class LoginResponseDto
     {
-            public string returnCode { get; set; }
-            public List<object> mights { get; set; }
-            public string returnMessage { get; set; }
-            public string userid { get; set; }
-            public string username { get; set; }
+        public string returnCode { get; set; }
+        public List<object> mights { get; set; }
+        public string returnMessage { get; set; }
+        public string userid { get; set; }
+        public string username { get; set; }
     }
 }

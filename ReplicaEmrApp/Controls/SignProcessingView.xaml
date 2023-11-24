@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReplicaEmrApp.Controls.SignProcessingView"
+             xmlns:models="clr-namespace:ReplicaEmrApp.Models"
+             x:DataType="models:SignProcessingViewModel">
+    <Grid  Margin="20"
+            WidthRequest="333"
+            HeightRequest="203"
+          >
+        <Border StrokeShape="RoundRectangle 10"
+                BackgroundColor="White"
+                StrokeThickness="0"
+                />
+        <VerticalStackLayout HorizontalOptions="Fill"
+                             VerticalOptions="Center"
+>
+            <Label Margin="0,0,0,0"
+                Text="{Binding Title}"
+                FontSize="14"
+                FontAttributes="Bold"
+                TextColor="#000000"
+                HorizontalOptions="Center"
+                />
+            <Label Margin="0,16,0,0"
+                Text="{Binding SubTitle1}"
+                FontSize="12"
+                TextColor="#000000"
+                HorizontalOptions="Center"
+                />
+            <Label Margin="0,4,0,0"
+                Text="{Binding SubTitle2}"
+                FontSize="12"
+                TextColor="#000000"
+                HorizontalOptions="Center"
+                />
+            <Label Margin="0,4,0,0"
+                Text="{Binding Message}"
+                FontSize="12"
+                TextColor="#000000"
+                HorizontalOptions="Center"
+                />
+            <ProgressBar
+                Margin="0,16,0,0"
+                WidthRequest="293"
+                HeightRequest="15"
+                ProgressColor="{StaticResource Primary}"
+                BackgroundColor="{StaticResource Secondary}"
+                Progress="{Binding Progress}"
+                />
+            <Button Text="停止簽章" WidthRequest="96" Padding="20,6" Command="{Binding StopViewModelCommand}"
+                    Margin="0,16,0,0" BackgroundColor="{StaticResource Danger}" 
+                    FontSize="14" CornerRadius="100"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>

@@ -19,6 +19,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     private readonly IStorageJSONService<List<ExceptionRecord>> storageJSONService;
     private readonly IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService;
     private readonly CurrentDeviceInformationService currentDeviceInformationService;
+    private readonly CheckSessionService checkSessionService;
     #endregion
 
     #region Property Member
@@ -29,7 +30,8 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         ExceptionService exceptionService,
         IStorageJSONService<List<ExceptionRecord>> storageJSONService,
         IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService,
-        CurrentDeviceInformationService currentDeviceInformationService)
+        CurrentDeviceInformationService currentDeviceInformationService,
+        CheckSessionService checkSessionService)
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
@@ -37,6 +39,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         this.storageJSONService = storageJSONService;
         this.storageJSONOfGlobalObjectService = storageJSONOfGlobalObjectService;
         this.currentDeviceInformationService = currentDeviceInformationService;
+        this.checkSessionService = checkSessionService;
     }
     #endregion
 
@@ -79,7 +82,14 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
             globalObject.Copy(gObject, globalObject);
             currentDeviceInformationService.Current
                 .Account = gObject.UserId;
-            await navigationService.NavigateAsync(MagicValueHelper.HomePage);
+
+            var isSessionAlive = await checkSessionService.CheckLoginAsync();
+
+            if(isSessionAlive)
+                await navigationService.NavigateAsync(MagicValueHelper.HomePage);
+            else
+                await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
+
         }
 
     }

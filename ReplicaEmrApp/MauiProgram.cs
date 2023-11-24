@@ -66,6 +66,7 @@ public static class MauiProgram
                     container.Register(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
                     container.Register(typeof(IStorageUtility), typeof(StorageUtility));
                     container.Register<LoginService>();
+                    container.Register<CheckSessionService>();
                     container.Register<ReportCodeService>();
                     container.Register<ReportDetailService>();
                     container.Register<ExceptionService>();
@@ -101,6 +102,15 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("materialdesignicons-webfont.ttf", "material");
             });
+
+        //TODO : 尚未清除底線
+        Microsoft.Maui.Handlers.EntryHandler
+            .Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+        {
+#if ANDROID
+            handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+#endif
+        });
 
         var app = builder.Build();
         return app;

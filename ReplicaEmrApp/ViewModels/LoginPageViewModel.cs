@@ -25,6 +25,9 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     string password = string.Empty;
 
     [ObservableProperty]
+    string pinCode = string.Empty;
+
+    [ObservableProperty]
     string errorMessage = string.Empty;
 
     [ObservableProperty]
@@ -48,8 +51,9 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
         this.reportCodeService = reportCodeService;
         this.storageJSONService = storageJSONService;
 #if DEBUG
-        account = "admin";
-        password = "cirtnexe0845";
+        Account = "admin";
+        Password = "cirtnexe0845";
+        PinCode = "pincode";
 #endif
     }
     #endregion

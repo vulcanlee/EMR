@@ -7,13 +7,13 @@
              x:DataType="viewModel:LoginPageViewModel"
              BackgroundColor="{StaticResource Secondary}"
              NavigationPage.HasNavigationBar="False">
-
-    <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="50,0">
+    <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0">
         <Grid.GestureRecognizers>
             <TapGestureRecognizer Command="{Binding DoSettingCommand}"
                                   NumberOfTapsRequired="2" />
         </Grid.GestureRecognizers>
-        <VerticalStackLayout VerticalOptions="Center">
+        <Image Source="intersect.svg" Aspect="AspectFill"/>
+        <VerticalStackLayout VerticalOptions="Center" Margin="50,0">
             <Image Source="exentric_logo.svg" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,28,0,0"
                FontSize="18" TextColor="#000" Text="耀瑄科技"/>
@@ -26,10 +26,10 @@
                     <RoundRectangle CornerRadius="100"/>
                 </Border.StrokeShape>
                 <Border.Shadow>
-                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
                 <Entry Text="{Binding Account}" Margin="12,0"
-                   BackgroundColor="White" Placeholder="帳號" 
+                   BackgroundColor="White" Placeholder="帳號" FontSize="14"
                    HorizontalOptions="Fill"/>
             </Border>
             <Border Margin="0,20,0,0" BackgroundColor="White" StrokeThickness="0">
@@ -37,9 +37,9 @@
                     <RoundRectangle CornerRadius="100"/>
                 </Border.StrokeShape>
                 <Border.Shadow>
-                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
-                <Entry Text="{Binding Password}" Margin="12,0" 
+                <Entry Text="{Binding Password}" Margin="12,0" IsPassword="True" FontSize="14"
                    BackgroundColor="White" Placeholder="密碼" 
                    HorizontalOptions="Fill"/>
             </Border>
@@ -48,9 +48,9 @@
                     <RoundRectangle CornerRadius="100"/>
                 </Border.StrokeShape>
                 <Border.Shadow>
-                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
-                <Entry Text="" Margin="12,0"
+                <Entry Text="{Binding PinCode}" Margin="12,0" FontSize="14"
                BackgroundColor="White" Placeholder="PIN碼" 
                HorizontalOptions="Fill"/>
             </Border>
@@ -61,11 +61,11 @@
                 </HorizontalStackLayout>
                 <Switch OnColor="#34C759"/>
             </Grid>
-            <Button Text="登入" Margin="0,30,0,0" CornerRadius="100"
+            <Button Text="登入" Margin="0,30,0,0" CornerRadius="100" FontSize="14"
                 HeightRequest="40" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
                 Command="{Binding DoLoginCommand}">
                 <Button.Shadow>
-                    <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Button.Shadow>
             </Button>
             <Label Text="{Binding ErrorMessage}" FontSize="15" Margin="0,20" TextColor="Red" IsVisible="{Binding IsError}"/>
