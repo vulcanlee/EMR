@@ -6,5 +6,10 @@ public partial class ReportDetailPage : ContentPage
     {
         InitializeComponent();
     }
+
+    protected override bool OnBackButtonPressed()
+    {
+        return false;
+    }
 }
 

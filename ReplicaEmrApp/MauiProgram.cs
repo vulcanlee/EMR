@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using Newtonsoft.Json;
 using Prism.Ioc;
 using ReplicaEmrApp.Helpers;
 using ReplicaEmrApp.Models;
@@ -109,6 +110,16 @@ public static class MauiProgram
         {
 #if ANDROID
             handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+#endif
+        });
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+        {
+#if ANDROID
+            //handler.PlatformView
+            //.SetBackgroundColor(Android.Graphics.Color.White);
+            handler.PlatformView.BackgroundTintList =
+            Android.Content.Res.ColorStateList
+            .ValueOf(Colors.White.ToAndroid());
 #endif
         });
 

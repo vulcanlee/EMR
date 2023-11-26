@@ -68,6 +68,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     [RelayCommand]
     async Task DoLoginAsync()
     {
+
         IsBusy = true;
         IsError = false;
         ErrorMessage = string.Empty;

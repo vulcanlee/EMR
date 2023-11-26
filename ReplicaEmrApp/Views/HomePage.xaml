@@ -88,14 +88,24 @@
               HorizontalOptions="Fill" VerticalOptions="Fill">
             <Rectangle BackgroundColor="{StaticResource Black}" 
                         Opacity="0.5"
-                     HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                     HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Rectangle.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding EmptyCommand}"/>
+                </Rectangle.GestureRecognizers>
+            </Rectangle>
             <controls:RefreshReportStatusView 
                 WidthRequest="333" HeightRequest="203"
                 BindingContext="{Binding RefreshReportStatusViewModel}"
                 VerticalOptions="Center" HorizontalOptions="Center"/>
         </Grid>
         <Grid Grid.RowSpan="2" IsVisible="{Binding ShowSignProcessingView}">
-            <Rectangle BackgroundColor="{StaticResource Black}" Opacity="0.5"/>
+            <Rectangle BackgroundColor="{StaticResource Black}" Opacity="0.5">
+                <Rectangle.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding EmptyCommand}"/>
+                </Rectangle.GestureRecognizers>
+            </Rectangle>
             <controls:SignProcessingView BindingContext="{Binding SignProcessingViewModel}"/>
         </Grid>
 
@@ -104,7 +114,12 @@
               HorizontalOptions="Fill" VerticalOptions="Fill">
             <Rectangle BackgroundColor="{StaticResource Black}" 
                         Opacity="0.5"
-                     HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                     HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Rectangle.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding EmptyCommand}"/>
+                </Rectangle.GestureRecognizers>
+            </Rectangle>
             <controls:StopSignView 
                 WidthRequest="333" HeightRequest="203"
                 BindingContext="{Binding StopSignViewModel}"

@@ -6,5 +6,8 @@ public partial class SplashPage : ContentPage
     {
         InitializeComponent();
     }
+    ~ SplashPage()
+    {
+    }
 }
 
