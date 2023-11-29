@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AndroidX.Activity;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using ReplicaEmrApp.Helpers;
@@ -15,6 +16,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     private readonly GlobalObject globalObject;
     private readonly ReportCodeService reportCodeService;
     private readonly IStorageJSONService<GlobalObject> storageJSONService;
+    private readonly IStorageJSONService<UserInfo> userInfoService;
     #endregion
 
     #region Property Member
@@ -38,22 +40,28 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
 
     [ObservableProperty]
     string version = string.Empty;
+
+    [ObservableProperty]
+    bool rememberAccount = false;
     #endregion
 
     #region Constructor
     public LoginPageViewModel(INavigationService navigationService,
         LoginService loginService, GlobalObject globalObject,
-        ReportCodeService reportCodeService, IStorageJSONService<GlobalObject> storageJSONService)
+        ReportCodeService reportCodeService,
+        IStorageJSONService<GlobalObject> storageJSONService,
+        IStorageJSONService<UserInfo> userInfoService)
     {
         this.navigationService = navigationService;
         this.loginService = loginService;
         this.globalObject = globalObject;
         this.reportCodeService = reportCodeService;
         this.storageJSONService = storageJSONService;
+        this.userInfoService = userInfoService;
 #if DEBUG
-        Account = "admin";
-        Password = "cirtnexe0845";
-        PinCode = "pincode";
+        //Account = "admin";
+        //Password = "cirtnexe0845";
+        //PinCode = "pincode";
 #endif
     }
     #endregion
@@ -68,7 +76,6 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     [RelayCommand]
     async Task DoLoginAsync()
     {
-
         IsBusy = true;
         IsError = false;
         ErrorMessage = string.Empty;
@@ -82,6 +89,24 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
                 await storageJSONService
                     .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename, globalObject);
 
+                if (RememberAccount)
+                {
+                    UserInfo userInfo = new UserInfo()
+                    {
+                        Account = Account,
+                        PWord = Password
+                    };
+                    await userInfoService
+                        .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.UserInfoFilename, userInfo);
+                }
+                else
+                {
+                    UserInfo userInfo = new UserInfo();
+
+                    await userInfoService
+                        .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.UserInfoFilename, userInfo);
+
+                }
                 await navigationService.NavigateAsync(MagicValueHelper.HomePage);
 
             }
@@ -109,9 +134,19 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
     {
     }
 
-    public void OnNavigatedTo(INavigationParameters parameters)
+    public async void OnNavigatedTo(INavigationParameters parameters)
     {
         Version = globalObject.Version;
+
+        UserInfo userInfo = await userInfoService
+            .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.UserInfoFilename);
+
+        if (userInfo != null && !string.IsNullOrEmpty(userInfo.Account))
+        {
+            Account = userInfo.Account;
+            Password = userInfo.PWord;
+            RememberAccount = true;
+        }
     }
     #endregion
 

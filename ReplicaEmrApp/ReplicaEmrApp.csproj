@@ -16,7 +16,7 @@
 		<ApplicationTitle>行動 EMR</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.replicaemrapp</ApplicationId>
+		<ApplicationId>com.exentric.replicaemrapp</ApplicationId>
 		<ApplicationIdGuid>d6738811-b029-45c0-9d91-7258c23609b7</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -57,6 +57,7 @@
 		<None Remove="Resources\Images\exentric_logo.svg" />
 		<None Remove="Resources\Images\folder.svg" />
 		<None Remove="Resources\Images\intersect.svg" />
+		<None Remove="Resources\Images\logout.svg" />
 		<None Remove="Resources\Images\person.svg" />
 		<None Remove="Resources\Splash\splash.svg" />
 	</ItemGroup>
@@ -66,6 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Prism.DryIoc.Maui" Version="9.0.271-pre" />

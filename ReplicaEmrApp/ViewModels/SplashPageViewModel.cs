@@ -12,9 +12,6 @@ namespace ReplicaEmrApp.ViewModels;
 
 public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 {
-    ~SplashPageViewModel()
-    {
-    }
     #region Field Member
     private readonly INavigationService navigationService;
     private readonly GlobalObject globalObject;

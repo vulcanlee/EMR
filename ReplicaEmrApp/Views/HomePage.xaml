@@ -9,7 +9,21 @@
              x:DataType="viewModel:HomePageViewModel"
              BackgroundColor="{StaticResource Secondary}"
              NavigationPage.HasNavigationBar="{Binding ShowNavigationPage}">
-    <ContentPage.ToolbarItems>
+
+    <NavigationPage.TitleView>
+        <Grid>
+            <Label Text="未簽章報告" TextColor="{StaticResource Black}" FontSize="24" FontAttributes="Bold"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Image Source="logout.svg" Margin="0,0,26,0" 
+               HorizontalOptions="End" VerticalOptions="Center">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding DoLogoutCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            
+        </Grid>
+    </NavigationPage.TitleView>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="登出" Command="{Binding DoLogoutCommand}">
             <ToolbarItem.IconImageSource>
                 <FontImageSource Glyph="&#xF0343;" Color="Black"
@@ -24,7 +38,7 @@
                      Size="40" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <Grid Margin="0,0,0,21">
         <Grid.RowDefinitions>
@@ -83,15 +97,15 @@
             </Button.Shadow>
         </Button>
 
-        <Grid Grid.RowSpan="2"
+        <Grid Grid.RowSpan="2" 
               IsVisible="{Binding RefreshingView}"
               HorizontalOptions="Fill" VerticalOptions="Fill">
+
             <Rectangle BackgroundColor="{StaticResource Black}" 
                         Opacity="0.5"
                      HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Rectangle.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding EmptyCommand}"/>
+                    <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
                 </Rectangle.GestureRecognizers>
             </Rectangle>
             <controls:RefreshReportStatusView 
@@ -102,8 +116,7 @@
         <Grid Grid.RowSpan="2" IsVisible="{Binding ShowSignProcessingView}">
             <Rectangle BackgroundColor="{StaticResource Black}" Opacity="0.5">
                 <Rectangle.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding EmptyCommand}"/>
+                    <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
                 </Rectangle.GestureRecognizers>
             </Rectangle>
             <controls:SignProcessingView BindingContext="{Binding SignProcessingViewModel}"/>
@@ -116,8 +129,7 @@
                         Opacity="0.5"
                      HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Rectangle.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding EmptyCommand}"/>
+                    <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
                 </Rectangle.GestureRecognizers>
             </Rectangle>
             <controls:StopSignView 

@@ -59,7 +59,7 @@
                     <Label Text="記住帳密？"/>
                     <Label Text="(公用手機請勿記住)" TextColor="{StaticResource Primary}"/>
                 </HorizontalStackLayout>
-                <Switch OnColor="#34C759"/>
+                <Switch IsToggled="{Binding RememberAccount}"/>
             </Grid>
             <Button Text="登入" Margin="0,30,0,0" CornerRadius="100" FontSize="14"
                 HeightRequest="40" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"

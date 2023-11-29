@@ -80,11 +80,6 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     #region Method Member
     #region Command Method
     [RelayCommand]
-    public void Empty()
-    {
-
-    }
-    [RelayCommand]
     public async Task RefreshAsync()
     {
         IsRefreshing = true;
@@ -155,6 +150,10 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     {
         isStopSign = true;
         ShowStopSignView = false;
+    }
+
+    [RelayCommand]
+    public void Empty() { 
     }
     #endregion
 

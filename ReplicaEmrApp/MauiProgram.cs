@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+﻿using CommunityToolkit.Maui;
 using Newtonsoft.Json;
 using Prism.Ioc;
 using ReplicaEmrApp.Helpers;
@@ -58,6 +58,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .UsePrism(prism =>
             {
                 prism.RegisterTypes(container =>
@@ -104,24 +105,17 @@ public static class MauiProgram
                 fonts.AddFont("materialdesignicons-webfont.ttf", "material");
             });
 
-        //TODO : 尚未清除底線
-        Microsoft.Maui.Handlers.EntryHandler
-            .Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
-        {
 #if ANDROID
-            handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-#endif
-        });
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
         {
-#if ANDROID
             //handler.PlatformView
             //.SetBackgroundColor(Android.Graphics.Color.White);
             handler.PlatformView.BackgroundTintList =
             Android.Content.Res.ColorStateList
-            .ValueOf(Colors.White.ToAndroid());
-#endif
+            .ValueOf(Android.Graphics.Color.White);
         });
+#endif
+
 
         var app = builder.Build();
         return app;
