@@ -16,7 +16,7 @@
     <Grid>
 
         <StackLayout Orientation="Vertical" HorizontalOptions="Center" VerticalOptions="Center">
-            <Image Source="exentric_logo.svg" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
+            <Image Source="exentric_logo.png" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,16,0,0">
                 <Label FontSize="24" FontAttributes="Bold" Text="電子病歷行動簽章"/>
                 <Label FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" Text="EMR APP"/>

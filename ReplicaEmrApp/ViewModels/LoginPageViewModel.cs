@@ -1,5 +1,4 @@
-﻿using AndroidX.Activity;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using ReplicaEmrApp.Helpers;
@@ -59,9 +58,9 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
         this.storageJSONService = storageJSONService;
         this.userInfoService = userInfoService;
 #if DEBUG
-        //Account = "admin";
-        //Password = "cirtnexe0845";
-        //PinCode = "pincode";
+        Account = "admin";
+        Password = "cirtnexe0845";
+        PinCode = "pincode";
 #endif
     }
     #endregion

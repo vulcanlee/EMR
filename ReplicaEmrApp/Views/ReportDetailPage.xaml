@@ -26,7 +26,7 @@
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:ReportDetailPageViewModel}},Path=TapItemCommand}"
                                 CommandParameter="{Binding .}"/>
                         </Grid.GestureRecognizers>
-                        <Image Source="detail_frame.svg" Aspect="AspectFit"/>
+                        <Image Source="detail_frame.png" Aspect="AspectFit"/>
                         <Grid Margin="12,10">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:ReportDetailPageViewModel}},Path=TapItemCommand}"
@@ -44,18 +44,18 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <HorizontalStackLayout Grid.Row="0" Grid.Column="0" >
-                                <Image Source="person.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Image Source="person.png" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
                                 <Label FontSize="12" Text="{Binding patfullname}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
                             </HorizontalStackLayout>
 
                             <StackLayout Grid.Row="2" Grid.Column="0" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-                                <Image Source="document.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Image Source="document.png" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
                                 <Label FontSize="12" Text="{Binding referno}" TextColor="{StaticResource Black}" VerticalOptions="Center"  LineBreakMode="TailTruncation" HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
 
                             <Label Grid.Row="0" Grid.Column="2" FontSize="12" Text="{Binding version}" VerticalOptions="Center" HorizontalOptions="Fill"/>
                             <HorizontalStackLayout Grid.Row="2" Grid.Column="2" HorizontalOptions="Fill">
-                                <Image Source="calendar.svg" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                <Image Source="calendar.png" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
                                 <Label FontSize="12"  Text="{Binding reportdateFormat}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
                             </HorizontalStackLayout>
                         </Grid>

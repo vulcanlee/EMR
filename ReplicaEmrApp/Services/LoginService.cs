@@ -28,9 +28,10 @@ public class LoginService
     {
         bool result = true;
 
-        string loginEndpoint = $"http://office.exentric.com.tw:8080/webemr/comm/login.do?pageid=pageLogin&LOGIN=6&userid={username}&password={password}";
+        string loginEndpoint = $" /webemr/comm/login.do?pageid=pageLogin&LOGIN=6&userid={username}&password={password}";
 
         HttpClientHandler handler = new HttpClientHandler();
+        handler.CookieContainer = new CookieContainer();
         HttpClient client = new HttpClient(handler);
         client.BaseAddress = new Uri(@"http://office.exentric.com.tw:8080/webemr");
         HttpResponseMessage response = await client.PostAsync(loginEndpoint, null);

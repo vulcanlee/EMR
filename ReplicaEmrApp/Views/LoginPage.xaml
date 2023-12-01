@@ -12,9 +12,9 @@
             <TapGestureRecognizer Command="{Binding DoSettingCommand}"
                                   NumberOfTapsRequired="2" />
         </Grid.GestureRecognizers>
-        <Image Source="intersect.svg" Aspect="AspectFill"/>
+        <Image Source="intersect.png" Aspect="AspectFill"/>
         <VerticalStackLayout VerticalOptions="Center" Margin="50,0">
-            <Image Source="exentric_logo.svg" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
+            <Image Source="exentric_logo.png" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,28,0,0"
                FontSize="18" TextColor="#000" Text="耀瑄科技"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,12,0,0"
@@ -59,9 +59,9 @@
                     <Label Text="記住帳密？"/>
                     <Label Text="(公用手機請勿記住)" TextColor="{StaticResource Primary}"/>
                 </HorizontalStackLayout>
-                <Switch IsToggled="{Binding RememberAccount}"/>
+                <Switch IsToggled="{Binding RememberAccount}" HorizontalOptions="End"/>
             </Grid>
-            <Button Text="登入" Margin="0,30,0,0" CornerRadius="100" FontSize="14"
+            <Button Text="登入" Margin="0,30,0,0" CornerRadius="20" FontSize="14"
                 HeightRequest="40" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
                 Command="{Binding DoLoginCommand}">
                 <Button.Shadow>

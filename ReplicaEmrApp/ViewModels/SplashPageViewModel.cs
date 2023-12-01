@@ -54,6 +54,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
+        await Task.Delay(2000);
         globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         currentDeviceInformationService.Reset();
         try
