@@ -17,12 +17,12 @@
             <HorizontalStackLayout Margin="0,16,0,0" HorizontalOptions="Center">
                 <Button Text="取消" HeightRequest="29" WidthRequest="68"
                         Command="{Binding CancelCommand}"
-                        CornerRadius="100" Padding="0" 
+                        CornerRadius="15" Padding="0" 
                         BackgroundColor="{StaticResource Info}"/>
                 
                 <Button Text="停止" HeightRequest="29" WidthRequest="68" 
                         Command="{Binding StopCommand}"
-                        CornerRadius="100" Padding="0" Margin="10,0,0,0" 
+                        CornerRadius="15" Padding="0" Margin="10,0,0,0" 
                         BackgroundColor="{StaticResource Danger}"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>

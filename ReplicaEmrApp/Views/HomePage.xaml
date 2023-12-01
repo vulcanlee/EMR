@@ -113,6 +113,7 @@
                 BindingContext="{Binding RefreshReportStatusViewModel}"
                 VerticalOptions="Center" HorizontalOptions="Center"/>
         </Grid>
+
         <Grid Grid.RowSpan="2" IsVisible="{Binding ShowSignProcessingView}">
             <Rectangle BackgroundColor="{StaticResource Black}" Opacity="0.5">
                 <Rectangle.GestureRecognizers>
@@ -132,6 +133,7 @@
                     <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
                 </Rectangle.GestureRecognizers>
             </Rectangle>
+            <!--<Rectangle BackgroundColor="Black" Opacity="0.5"/>-->
             <controls:StopSignView 
                 WidthRequest="333" HeightRequest="203"
                 BindingContext="{Binding StopSignViewModel}"

@@ -119,6 +119,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware
     public async Task SignAllAsync()
     {
         ShowNavigationPage = false;
+        await Task.Delay(1500);
         ShowSignProcessingView = true;
         int total = 100;
         isStopSign = false;

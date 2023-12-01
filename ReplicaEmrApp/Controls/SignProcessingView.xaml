@@ -50,7 +50,7 @@
                 />
             <Button Text="停止簽章" WidthRequest="96" Padding="20,6" Command="{Binding StopViewModelCommand}"
                     Margin="0,16,0,0" BackgroundColor="{StaticResource Danger}" 
-                    FontSize="14" CornerRadius="100"/>
+                    FontSize="14" CornerRadius="15"/>
         </VerticalStackLayout>
     </Grid>
 </ContentView>
