@@ -9,7 +9,7 @@
             HeightRequest="203"
           >
         <Border StrokeShape="RoundRectangle 10"
-                BackgroundColor="White"
+                BackgroundColor="{StaticResource White}"
                 StrokeThickness="0"
                 />
         <VerticalStackLayout HorizontalOptions="Fill"
@@ -48,8 +48,8 @@
                 BackgroundColor="{StaticResource Secondary}"
                 Progress="{Binding Progress}"
                 />
-            <Button Text="停止簽章" WidthRequest="96" Padding="20,6" Command="{Binding StopViewModelCommand}"
-                    Margin="0,16,0,0" BackgroundColor="{StaticResource Danger}" 
+            <Button Text="停止簽章" WidthRequest="96" Padding="0,6" Command="{Binding StopViewModelCommand}"
+                    Margin="0,16,0,0" BackgroundColor="{StaticResource Danger}" TextColor="{StaticResource White}" 
                     FontSize="14" CornerRadius="15"/>
         </VerticalStackLayout>
     </Grid>

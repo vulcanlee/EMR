@@ -8,18 +8,18 @@
              BackgroundColor="{StaticResource Secondary}"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
     
-    <ContentPage.Behaviors>
+    <!--<ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Secondary}"
                                    StatusBarStyle="DarkContent"/>
-    </ContentPage.Behaviors>
+    </ContentPage.Behaviors>-->
     
     <Grid>
 
         <StackLayout Orientation="Vertical" HorizontalOptions="Center" VerticalOptions="Center">
             <Image Source="exentric_logo.png" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,16,0,0">
-                <Label FontSize="24" FontAttributes="Bold" Text="電子病歷行動簽章"/>
-                <Label FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" Text="EMR APP"/>
+                <Label FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Black}" Text="電子病歷行動簽章"/>
+                <Label FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Black}" HorizontalTextAlignment="Center" Text="EMR APP"/>
             </StackLayout>
         </StackLayout>
         <Label Margin="0,0,0,34" HorizontalOptions="Center"  VerticalOptions="End" 

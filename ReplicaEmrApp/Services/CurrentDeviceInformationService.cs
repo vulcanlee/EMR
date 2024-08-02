@@ -15,6 +15,7 @@ namespace ReplicaEmrApp.Services
 
         public void Reset()
         {
+            //TODO:尚未加入device機制
             //CurrentDeviceInformation.Account = string.Empty;
             //CurrentDeviceInformation.Password = string.Empty;
             Current.MauiVersion = string.Empty;

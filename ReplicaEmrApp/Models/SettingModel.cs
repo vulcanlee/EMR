@@ -11,14 +11,16 @@ namespace ReplicaEmrApp.Models
     public partial class SettingModel : ObservableObject
     {
         [ObservableProperty]
-         string endingPoint  = "http://office.exentric.com.tw:8080/webemr";
+        string endPoint;
         [ObservableProperty]
-         int intervalSeconds  = 600;
+        string intervalSeconds;
         [ObservableProperty]
-        string hid  = "70400845";
+        string hid ;
         [ObservableProperty]
-        string name  = "耀瑄科技";
+        string name;
         [ObservableProperty]
-        string reportListName  = "未簽章報告";
+        string reportListName;
+        [ObservableProperty]
+        bool engineerMode;
     }
 }

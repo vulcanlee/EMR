@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using ReplicaEmrApp.Dto;
+using ReplicaEmrApp.Helpers;
 using ReplicaEmrApp.Models;
 using System;
 using System.Collections.Generic;
@@ -12,43 +14,57 @@ namespace ReplicaEmrApp.Services
     public class CheckSessionService
     {
         private readonly GlobalObject globalObject;
+        private readonly IPageDialogService dialogService;
+        private readonly INavigationService navigationService;
+        private readonly IStorageJSONService<GlobalObject> storageJSONService;
+        private readonly FailLogService failLogService;
+        private readonly ParameterService parameterService;
+        private readonly IDeviceService deviceService;
 
-        public CheckSessionService(GlobalObject globalObject)
+        public CheckSessionService(GlobalObject globalObject,
+            IPageDialogService dialogService,
+            INavigationService navigationService,
+            IStorageJSONService<GlobalObject> storageJSONService,
+            FailLogService failLogService,
+                    ParameterService parameterService,
+        IDeviceService deviceService)
         {
             this.globalObject = globalObject;
+            this.dialogService = dialogService;
+            this.navigationService = navigationService;
+            this.storageJSONService = storageJSONService;
+            this.failLogService = failLogService;
+            this.parameterService = parameterService;
+            this.deviceService = deviceService;
         }
-        public async Task<bool> CheckLoginAsync()
+
+        public async Task<bool> ReloadDataAsync<T>(ApiResultModel<T> dto, OperlogDto specifyLog, bool showAlertDialog = true)
         {
-            string endpoint = $"http://office.exentric.com.tw:8080/webemr/comm/checkLogin.do;" +
-                $"jsessionid={globalObject.JSESSIONID}?sessionid={globalObject.JSESSIONID}";
-
-            HttpClientHandler handler = new HttpClientHandler();
-            HttpClient client = new HttpClient(handler);
-            client.BaseAddress = new Uri(@"http://office.exentric.com.tw:8080/webemr");
-            HttpResponseMessage response = await client.PostAsync(endpoint, null);
-
-            if (response.IsSuccessStatusCode)
+            if (dto != null && dto.code == MagicValueHelper.NeedLoginStatus)
             {
-                string responseContent = await response.Content.ReadAsStringAsync();
+                if (showAlertDialog) await dialogService.DisplayAlertAsync("登入逾時", "請重新登入", "確定");
+                globalObject.CleanUp();
+                await storageJSONService
+                    .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename,
+                                   globalObject);
+                await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
 
-                try
-                {
-                    CheckLoginResponseDto checkLoginResponseDto = JsonConvert.DeserializeObject<CheckLoginResponseDto>(responseContent);
-                    #region 判斷登入是否成功
-                    if (checkLoginResponseDto != null && checkLoginResponseDto.ReturnCode == "0000")
-                    {
-                        return true;
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
-                #endregion
+                return true;
             }
-            return false;
+            else if (dto != null && dto.code != MagicValueHelper.SuccessStatus)
+            {
+                OperlogDto operlog = new OperlogDto();
+                operlog.PrepareBaseData(parameterService, deviceService);
+                operlog.PrepareExceptionData(specifyLog);
+                if(string.IsNullOrEmpty(specifyLog.errorMsg)) operlog.errorMsg = dto.msg;
 
+                await failLogService.AddPostToFileAsync(operlog);
+                if(showAlertDialog) await dialogService.DisplayAlertAsync("警告", $"code:{dto.code} , {dto.msg}", "確定");              
+
+                return true;
+            }
+
+            return false;
         }
 
     }

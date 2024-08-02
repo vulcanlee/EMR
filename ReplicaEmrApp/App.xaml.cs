@@ -1,4 +1,5 @@
-﻿namespace ReplicaEmrApp;
+﻿
+namespace ReplicaEmrApp;
 
 public partial class App : Application
 {

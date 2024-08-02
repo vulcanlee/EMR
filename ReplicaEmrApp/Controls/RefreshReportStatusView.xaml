@@ -9,7 +9,7 @@
             HeightRequest="150"
           >
         <Border StrokeShape="RoundRectangle 10"
-                BackgroundColor="White"
+                BackgroundColor="{StaticResource White}"
                 />
         <VerticalStackLayout HorizontalOptions="Center"
                              VerticalOptions="Center"

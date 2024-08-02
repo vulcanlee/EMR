@@ -4,6 +4,10 @@
 	<dict>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>cgappsign</string>
+		</array>
 		<key>UIDeviceFamily</key>
 		<array>
 			<integer>1</integer>
@@ -16,8 +20,6 @@
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UISupportedInterfaceOrientations~ipad</key>
 		<array>
@@ -28,16 +30,37 @@
 		</array>
 		<key>XSAppIconAssets</key>
 		<string>Assets.xcassets/appicon.appiconset</string>
+		<key>CFBundleIdentifier</key>
+		<string></string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>URL 類型 1</string>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>exentricemrapp</string>
+				</array>
+			</dict>
+		</array>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>fetch</string>
 		</array>
 
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false/>
+
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
+		
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSExceptionDomains</key>
 			<dict>
-				<key>exentric.com.tw</key>
+				<key>office.exentric.com.tw</key>
 				<dict>
 					<key>NSExceptionAllowsInsecureHTTPLoads</key>
 					<true/>
@@ -47,5 +70,30 @@
 			</dict>
 		</dict>
 
+
+
+		<!--<key>NSAppleMusicUsageDescription</key>
+		<string>Play using while you are hiking</string>
+		<key>NSCalendarsUsageDescription</key>
+		<string>$(PRODUCT_NAME) user your calendar.</string>
+		<key>NSContactsUsageDescription</key>
+		<string>$(PRODUCT_NAME) contacts use.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>$(PRODUCT_NAME) photos and video use.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>$(PRODUCT_NAME) camera use.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>$(PRODUCT_NAME) microphone use.</string>
+		<key>NSSiriUsageDescription</key>
+		<string>$(PRODUCT_NAME) siri use.</string>-->
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	</dict>
 </plist>

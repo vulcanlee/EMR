@@ -19,6 +19,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     private readonly IStorageJSONService<List<ExceptionRecord>> storageJSONService;
     private readonly IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService;
     private readonly CurrentDeviceInformationService currentDeviceInformationService;
+    private readonly ConfigService configService;
     private readonly CheckSessionService checkSessionService;
     #endregion
 
@@ -31,7 +32,9 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         IStorageJSONService<List<ExceptionRecord>> storageJSONService,
         IStorageJSONService<GlobalObject> storageJSONOfGlobalObjectService,
         CurrentDeviceInformationService currentDeviceInformationService,
-        CheckSessionService checkSessionService)
+        ConfigService configService,
+        CheckSessionService checkSessionService
+        )
     {
         this.navigationService = navigationService;
         this.globalObject = globalObject;
@@ -39,6 +42,7 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         this.storageJSONService = storageJSONService;
         this.storageJSONOfGlobalObjectService = storageJSONOfGlobalObjectService;
         this.currentDeviceInformationService = currentDeviceInformationService;
+        this.configService = configService;
         this.checkSessionService = checkSessionService;
     }
     #endregion
@@ -54,45 +58,47 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
-        await Task.Delay(2000);
-        globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        currentDeviceInformationService.Reset();
-        try
-        {
-            List<ExceptionRecord> datas = await storageJSONService
-                .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
-            if (datas != null && datas.Count > 0)
-            {
-                await exceptionService.UploadAsync(datas);
-            }
+        try {
+            globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            currentDeviceInformationService.Reset();
 
+            GlobalObject gObject = await storageJSONOfGlobalObjectService
+        .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
+            if (gObject == null || string.IsNullOrEmpty(gObject.Token))
+            {
+                await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
+            }
+            else
+            {
+                globalObject.Copy(gObject, globalObject);
+                currentDeviceInformationService.Current
+                    .Account = gObject.UserName;
+
+                //隨機摳一隻api確認token沒有失效後才做簽章動作
+                (var configApiResult, var specifyLog) = await configService.GetAsync();
+                if (await checkSessionService.ReloadDataAsync(configApiResult, specifyLog, false)) return;
+
+                //TODO: 移到login、homepage
+                //List<ExceptionRecord> datas = await storageJSONService
+                //    .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
+                //if (datas != null && datas.Count > 0)
+                //{
+                //    if (await exceptionService.UploadAsync(datas) == false)
+                //    {
+                //        await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
+                //        return;
+                //    }
+                //}
+
+                await navigationService.NavigateAsync(MagicValueHelper.HomePage);
+            }
         }
         catch (Exception ex)
         {
-
-        }
-
-        GlobalObject gObject = await storageJSONOfGlobalObjectService
-            .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
-        if (gObject == null || string.IsNullOrEmpty(gObject.JSESSIONID))
-        {
+            Debug.WriteLine(ex.Message);
             await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
+            return;
         }
-        else
-        {
-            globalObject.Copy(gObject, globalObject);
-            currentDeviceInformationService.Current
-                .Account = gObject.UserId;
-
-            var isSessionAlive = await checkSessionService.CheckLoginAsync();
-
-            if(isSessionAlive)
-                await navigationService.NavigateAsync(MagicValueHelper.HomePage);
-            else
-                await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
-
-        }
-
     }
     #endregion
 

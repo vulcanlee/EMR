@@ -5,15 +5,18 @@
              x:Class="ReplicaEmrApp.Views.LoginPage"
              xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
              x:DataType="viewModel:LoginPageViewModel"
+             xmlns:Dto="clr-namespace:ReplicaEmrApp.Dto"
              BackgroundColor="{StaticResource Secondary}"
              NavigationPage.HasNavigationBar="False">
-    <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0">
+    <Grid Grid.Row="0"  HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0" IgnoreSafeArea="True">
         <Grid.GestureRecognizers>
             <TapGestureRecognizer Command="{Binding DoSettingCommand}"
                                   NumberOfTapsRequired="2" />
+            <TapGestureRecognizer Command="{Binding TapCommand}"
+                                  NumberOfTapsRequired="1" />
         </Grid.GestureRecognizers>
-        <Image Source="intersect.png" Aspect="AspectFill"/>
-        <VerticalStackLayout VerticalOptions="Center" Margin="50,0">
+        <Image Source="intersect.png" Aspect="Fill"/>
+        <VerticalStackLayout VerticalOptions="Center" Margin="50,0,50,0">
             <Image Source="exentric_logo.png" WidthRequest="95" HeightRequest="95" Aspect="AspectFit"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" Margin="0,28,0,0"
                FontSize="18" TextColor="#000" Text="耀瑄科技"/>
@@ -21,7 +24,7 @@
                FontSize="24" FontAttributes="Bold" TextColor="#000" Text="電子病歷行動簽章"/>
             <Label HorizontalOptions="Center"  VerticalOptions="Center" 
                FontSize="24" FontAttributes="Bold" TextColor="#000" Text="EMR APP"/>
-            <Border Margin="0,28,0,0" BackgroundColor="White" StrokeThickness="0">
+            <Border Margin="0,28,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="100"/>
                 </Border.StrokeShape>
@@ -29,10 +32,10 @@
                     <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
                 <Entry Text="{Binding Account}" Margin="12,0"
-                   BackgroundColor="White" Placeholder="帳號" FontSize="14"
+                   BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}" Placeholder="帳號" PlaceholderColor="{StaticResource Gray500}" FontSize="14"
                    HorizontalOptions="Fill"/>
             </Border>
-            <Border Margin="0,20,0,0" BackgroundColor="White" StrokeThickness="0">
+            <Border Margin="0,20,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="100"/>
                 </Border.StrokeShape>
@@ -40,29 +43,29 @@
                     <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
                 <Entry Text="{Binding Password}" Margin="12,0" IsPassword="True" FontSize="14"
-                   BackgroundColor="White" Placeholder="密碼" 
+                   BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}" Placeholder="密碼" PlaceholderColor="{StaticResource Gray500}" 
                    HorizontalOptions="Fill"/>
             </Border>
-            <Border Margin="0,20,0,0" BackgroundColor="White" StrokeThickness="0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="100"/>
-                </Border.StrokeShape>
+            <Border Margin="0,20,0,0" StrokeThickness="0">
                 <Border.Shadow>
                     <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
                 </Border.Shadow>
-                <Entry Text="{Binding PinCode}" Margin="12,0" FontSize="14"
-               BackgroundColor="White" Placeholder="PIN碼" 
-               HorizontalOptions="Fill"/>
+                <Picker x:Name="TenantCode" Title="院區" IsVisible="{Binding ShowTenantPicker}" TextColor="{StaticResource Black}" ItemsSource="{Binding TenantCodeList}"
+        SelectedItem="{Binding TenantCode}" ItemDisplayBinding="{Binding TenantName}">
+                </Picker>
             </Border>
-            <Grid Margin="0,20,0,0">
+            
+            <!--</Border>-->
+            <!--<Grid Margin="0,20,0,0">
                 <HorizontalStackLayout VerticalOptions="Center">
                     <Label Text="記住帳密？"/>
                     <Label Text="(公用手機請勿記住)" TextColor="{StaticResource Primary}"/>
                 </HorizontalStackLayout>
                 <Switch IsToggled="{Binding RememberAccount}" HorizontalOptions="End"/>
-            </Grid>
+            </Grid>-->
             <Button Text="登入" Margin="0,30,0,0" CornerRadius="20" FontSize="14"
                 HeightRequest="40" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}"
+                    TextColor="{StaticResource White}"
                 Command="{Binding DoLoginCommand}">
                 <Button.Shadow>
                     <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>

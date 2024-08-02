@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dto="clr-namespace:ReplicaEmrApp.Dto"
+             Title="簽章失敗紀錄"
+             x:Class="ReplicaEmrApp.Views.FailLogPage"
+             xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
+             x:DataType="viewModel:FailLogPageViewModel"
+             BackgroundColor="{StaticResource Secondary}">
+
+    <Grid Margin="0,16,0,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Margin="20,0,0,0" Text="{Binding Summary}" FontSize="12" TextColor="#6C6C6C" VerticalOptions="Center" HorizontalOptions="Start"/>
+        <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding LogList}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="dto:OperlogDto">
+                        <Grid>
+                            <Border Margin="20,0,20,12" StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="{StaticResource Shadow}" Offset="10,12" Radius="9" Opacity="0.2"/>
+                                </Border.Shadow>
+                                <Grid BackgroundColor="{StaticResource Primary}" Padding="8,0,0,0">
+                                    <Border Stroke="{StaticResource White}" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="3,10,3,10"/>
+                                        </Border.StrokeShape>
+                                        <Grid Padding="12,10" BackgroundColor="{StaticResource White}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="14"/>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0" >
+                                                <Image Source="calendar.png" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                                <Label FontSize="12"  Text="{Binding reportdateFormat}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
+                                            </HorizontalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" >
+                                                <Label Text="錯誤訊息：" TextColor="{StaticResource Black}"/>
+                                                <Label FontSize="12" Text="{Binding errorMsg}" TextColor="{StaticResource Black}" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy} " 
+                   HorizontalOptions="Center" VerticalOptions="Center" 
+                   WidthRequest="100" HeightRequest="100"/>
+    </Grid>
+
+</ContentPage>

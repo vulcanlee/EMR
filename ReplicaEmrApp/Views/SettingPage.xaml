@@ -8,107 +8,133 @@
              BackgroundColor="{StaticResource Secondary}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="76"/>
-        </Grid.RowDefinitions>
-        <ScrollView>
-            <VerticalStackLayout Margin="20,0"
-                             >
-                <Label Margin="0,10,0,0"
-               FontSize="16" FontAttributes="Bold"
-                TextColor="#000" Text="一般設定"/>
-                <Label Margin="12,10,0,0"
-               FontSize="14" 
-                TextColor="#000" Text="伺服器"/>
-                <Border Margin="0,2,0,0" BackgroundColor="White" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="100"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
-                    </Border.Shadow>
-                    <Entry Text="{Binding SettingModel.EndingPoint}" Margin="10,0"
-                   BackgroundColor="White"  
-                   HorizontalOptions="Fill"/>
-                </Border>
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding TapCommand}"
+                          NumberOfTapsRequired="1" />
+        </Grid.GestureRecognizers>
+        <Grid IsVisible="{Binding ShowSettingArea}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="76"/>
+            </Grid.RowDefinitions>
+            <ScrollView>
+                <VerticalStackLayout Margin="20,0"
+                            >
+                    <Label Margin="0,10,0,0"
+            FontSize="16" FontAttributes="Bold"
+            TextColor="#000" Text="一般設定"/>
+                    <Label Margin="12,10,0,0" FontSize="14" TextColor="#000" Text="工程模式"/>
+                    <Switch IsToggled="{Binding SettingModel.EngineerMode}" HorizontalOptions="Start"/>
+                    <Label Margin="12,10,0,0" FontSize="14" TextColor="#000" Text="伺服器"/>
+                    <Border Margin="0,2,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="100"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                        </Border.Shadow>
+                        <Entry Text="{Binding SettingModel.EndPoint}" Margin="10,0"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}"
+                HorizontalOptions="Fill"/>
+                    </Border>
 
-                <Label Margin="12,10,12,0"
-               FontSize="14" 
-                TextColor="#000" Text="自動執行間隔秒數"/>
-                <Border Margin="0,2,0,0" BackgroundColor="White" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="100"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
-                    </Border.Shadow>
-                    <Entry Text="{Binding SettingModel.IntervalSeconds}" Margin="10,0"
-                       Keyboard="Numeric"
-                   BackgroundColor="White"  
-                   HorizontalOptions="Fill"/>
-                </Border>
+                    <!--<Label Margin="12,10,12,0"
+            FontSize="14" 
+            TextColor="#000" Text="自動執行間隔秒數"/>
+                    <Border Margin="0,2,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="100"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                        </Border.Shadow>
+                        <Entry Text="{Binding SettingModel.IntervalSeconds}" Margin="10,0"
+                    Keyboard="Numeric"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}"
+                HorizontalOptions="Fill"/>
+                    </Border>
 
-                <Label Margin="12,10,12,0"
-               FontSize="14" 
-                TextColor="#000" Text="醫院代碼"/>
-                <Border Margin="0,2,0,0" BackgroundColor="White" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="100"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
-                    </Border.Shadow>
-                    <Entry Text="{Binding SettingModel.Hid}" Margin="10,0"
-                       Keyboard="Numeric"
-                   BackgroundColor="White"  
-                   HorizontalOptions="Fill"/>
-                </Border>
+                    <Label Margin="12,10,12,0"
+            FontSize="14" 
+            TextColor="#000" Text="醫院代碼"/>
+                    <Border Margin="0,2,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="100"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                        </Border.Shadow>
+                        <Entry Text="{Binding SettingModel.Hid}" Margin="10,0"
+                    Keyboard="Numeric"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}" 
+                HorizontalOptions="Fill"/>
+                    </Border>
 
-                <Label Margin="12,10,12,0"
-               FontSize="14" 
-                TextColor="#000" Text="App醫院名稱"/>
-                <Border Margin="0,2,0,0" BackgroundColor="White" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="100"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
-                    </Border.Shadow>
-                    <Entry Text="{Binding SettingModel.Name}" Margin="10,0"
-                   BackgroundColor="White"  
-                   HorizontalOptions="Fill"/>
-                </Border>
+                    <Label Margin="12,10,12,0"
+            FontSize="14" 
+            TextColor="#000" Text="App醫院名稱"/>
+                    <Border Margin="0,2,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="100"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                        </Border.Shadow>
+                        <Entry Text="{Binding SettingModel.Name}" Margin="10,0"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}"  
+                HorizontalOptions="Fill"/>
+                    </Border>
 
-                <Label Margin="12,10,12,0"
-               FontSize="14" 
-                TextColor="#000" Text="報告列表名稱"/>
-                <Border Margin="0,2,0,0" BackgroundColor="White" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="100"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
-                    </Border.Shadow>
-                    <Entry Text="{Binding SettingModel.ReportListName}" Margin="10,0"
-                   BackgroundColor="White"  
-                   HorizontalOptions="Fill"/>
-                </Border>
+                    <Label Margin="12,10,12,0"
+            FontSize="14" 
+            TextColor="#000" Text="報告列表名稱"/>
+                    <Border Margin="0,2,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="100"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#1C4D51" Offset="0,9" Opacity="0.2" Radius="20"/>
+                        </Border.Shadow>
+                        <Entry Text="{Binding SettingModel.ReportListName}" Margin="10,0"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}"  
+                HorizontalOptions="Fill"/>
+                    </Border>-->
 
-                <BoxView HorizontalOptions="Fill" VerticalOptions="Start"
-                     HeightRequest="1" Color="#AFAFAF" Margin="0,20,0,0"/>
+                    <BoxView HorizontalOptions="Fill" VerticalOptions="Start"
+                    HeightRequest="1" Color="#AFAFAF" Margin="0,20,0,0"/>
 
-                <Label Margin="0,28,0,0"
-               FontSize="16" FontAttributes="Bold"
-                TextColor="#000" Text="應用程式資訊"/>
-            </VerticalStackLayout>
-        </ScrollView>
-        <Button Grid.Row="1" Text="儲存" Margin="10,10" CornerRadius="100" WidthRequest="283" Command="{Binding SaveSettingCommandCommand}"
-        HeightRequest="56" VerticalOptions="Center" HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}" FontSize="20">
-            <Button.Shadow>
-                <Shadow Brush="#707070" Offset="0,20" Opacity="0.2" Radius="20"/>
-            </Button.Shadow>
-        </Button>
+                    <Label Margin="0,28,0,0"
+            FontSize="16" FontAttributes="Bold"
+            TextColor="#000" Text="應用程式資訊"/>
+                </VerticalStackLayout>
+            </ScrollView>
+            <Button Grid.Row="1" Text="儲存" Margin="10,10" CornerRadius="28" WidthRequest="283" Command="{Binding SaveSettingCommandCommand}"
+    HeightRequest="56" VerticalOptions="Center" HorizontalOptions="Fill" TextColor="{StaticResource White}" BackgroundColor="{StaticResource Primary}" FontSize="20">
+                <Button.Shadow>
+                    <Shadow Brush="#707070" Offset="0,20" Opacity="0.2" Radius="20"/>
+                </Button.Shadow>
+            </Button>
+        </Grid>
+        <VerticalStackLayout VerticalOptions="Start" Margin="50,0,50,0" IsVisible="{Binding ShowVerifyArea}">
+            <Border Margin="0,28,0,0" BackgroundColor="{StaticResource White}" StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="100"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
+                </Border.Shadow>
+                <Entry Text="{Binding VerifyCode}" Margin="12,0" IsPassword="True" FontSize="14"
+                BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}" Placeholder="驗證碼" 
+                HorizontalOptions="Fill"></Entry>  
+            </Border>
+            <Button Text="確認" Margin="0,30,0,0" CornerRadius="20" FontSize="14"
+                HeightRequest="40" HorizontalOptions="Fill" TextColor="{StaticResource White}"
+                    BackgroundColor="{StaticResource Primary}" Command="{Binding VerifyCommand}">
+                <Button.Shadow>
+                    <Shadow Brush="#1C4D51" Offset="10,20" Opacity="0.2" Radius="20"/>
+                </Button.Shadow>
+            </Button>
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>

@@ -8,7 +8,7 @@ namespace ReplicaEmrApp.Models
 {
     public class ReportCodeNode
     {
-        public string reportName { get; set; }
-        public string reportCode { get; set; }
+        public string frmName { get; set; }
+        public string frmCode { get; set; }
     }
 }

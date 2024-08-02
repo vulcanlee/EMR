@@ -5,9 +5,11 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReplicaEmrApp", "ReplicaEmrApp\ReplicaEmrApp.csproj", "{10ED6890-B9BD-4A45-93ED-87FB9ADD6850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmrRestApi", "EmrRestApi\EmrRestApi.csproj", "{C634028B-8998-4919-A969-BB98C0E09A7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmrRestApi", "EmrRestApi\EmrRestApi.csproj", "{C634028B-8998-4919-A969-BB98C0E09A7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareResource", "ShareResource\ShareResource.csproj", "{2D546963-131E-405A-8A91-FCA52359EE30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareResource", "ShareResource\ShareResource.csproj", "{2D546963-131E-405A-8A91-FCA52359EE30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoReport", "AutoReport\AutoReport\AutoReport.csproj", "{F5704026-2F94-4F92-878D-0A7714540031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{2D546963-131E-405A-8A91-FCA52359EE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D546963-131E-405A-8A91-FCA52359EE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D546963-131E-405A-8A91-FCA52359EE30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5704026-2F94-4F92-878D-0A7714540031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5704026-2F94-4F92-878D-0A7714540031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5704026-2F94-4F92-878D-0A7714540031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5704026-2F94-4F92-878D-0A7714540031}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

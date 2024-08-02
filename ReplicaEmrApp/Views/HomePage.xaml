@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="未簽章報告"
+             Title="{Binding Title}"
              x:Class="ReplicaEmrApp.Views.HomePage"
              xmlns:viewModel="clr-namespace:ReplicaEmrApp.ViewModels"
              xmlns:model="clr-namespace:ReplicaEmrApp.Models"
@@ -12,15 +12,20 @@
 
     <NavigationPage.TitleView>
         <Grid>
-            <Label Text="未簽章報告" TextColor="{StaticResource Black}" FontSize="24" FontAttributes="Bold"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Image Source="operlog.png" Margin="0,0,26,0" 
+                HorizontalOptions="Start" VerticalOptions="Center">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ViewOperlogCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <Label Text="{Binding Title}" TextColor="{StaticResource Black}" FontSize="24" FontAttributes="Bold"
+                HorizontalOptions="Center" VerticalOptions="Center"/>
             <Image Source="logout.png" Margin="0,0,26,0" 
-               HorizontalOptions="End" VerticalOptions="Center">
+                HorizontalOptions="End" VerticalOptions="Center">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding DoLogoutCommand}"/>
                 </Image.GestureRecognizers>
             </Image>
-            
         </Grid>
     </NavigationPage.TitleView>
     <!--<ContentPage.ToolbarItems>
@@ -40,7 +45,7 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>-->
 
-    <Grid Margin="0,0,0,21">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="76"/>
@@ -59,7 +64,7 @@
                                 <Border.Shadow>
                                     <Shadow Brush="#1C4D51" Offset="10,12" Radius="9" Opacity="0.2"/>
                                 </Border.Shadow>
-                                <Grid HeightRequest="55" HorizontalOptions="Fill" BackgroundColor="White">
+                                <Grid HeightRequest="55" HorizontalOptions="Fill" BackgroundColor="{StaticResource White}">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer 
                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:HomePageViewModel}},Path=TapItemCommand}"
@@ -74,10 +79,10 @@
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Source="folder.png" HeightRequest="35" WidthRequest="35"/>
                                         <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                                            <Label FontSize="12" Text="{Binding ReportCode}"></Label>
-                                            <Label  FontSize="14" Text="{Binding ReportName}"></Label>
+                                            <Label FontSize="12" Text="{Binding ReportCode}" TextColor="{StaticResource Black}"></Label>
+                                            <Label  FontSize="14" Text="{Binding ReportName}" TextColor="{StaticResource Black}" LineBreakMode="TailTruncation"></Label>
                                         </VerticalStackLayout>
-                                        <Label Grid.Column="2" FontSize="20" VerticalTextAlignment="Center" HorizontalTextAlignment="End" Text="{Binding TotalReport}"/>
+                                        <Label Grid.Column="2" FontSize="20" VerticalTextAlignment="Center" HorizontalTextAlignment="End" Text="{Binding TotalReport}"  TextColor="{StaticResource Black}"/>
                                     </Grid>
                                 </Grid>
                             </Border>
@@ -87,7 +92,7 @@
             </CollectionView>
 
         </RefreshView>
-        <Button Grid.Row="1" Text="全部簽章" Margin="10,10" CornerRadius="27" 
+        <Button Grid.Row="1" Text="全部簽章" TextColor="{StaticResource White}" Margin="10,10,10,21" CornerRadius="28" 
                 WidthRequest="283" HeightRequest="56"
                 Command="{Binding SignAllCommand}"
                  VerticalOptions="Center" HorizontalOptions="Fill" 
@@ -100,43 +105,55 @@
         <Grid Grid.RowSpan="2" 
               IsVisible="{Binding RefreshingView}"
               HorizontalOptions="Fill" VerticalOptions="Fill">
-
-            <Rectangle BackgroundColor="{StaticResource Black}" 
-                        Opacity="0.5"
-                     HorizontalOptions="Fill" VerticalOptions="Fill">
-                <Rectangle.GestureRecognizers>
+            <Image Source="black50.png" Aspect="Fill"
+         HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
-                </Rectangle.GestureRecognizers>
-            </Rectangle>
+                </Image.GestureRecognizers>
+            </Image>
             <controls:RefreshReportStatusView 
                 WidthRequest="333" HeightRequest="203"
                 BindingContext="{Binding RefreshReportStatusViewModel}"
                 VerticalOptions="Center" HorizontalOptions="Center"/>
         </Grid>
-
-        <Grid Grid.RowSpan="2" IsVisible="{Binding ShowSignProcessingView}">
-            <Rectangle BackgroundColor="{StaticResource Black}" Opacity="0.5">
-                <Rectangle.GestureRecognizers>
+        <Grid Grid.RowSpan="2" IsVisible="{Binding ShowSignProcessingView}"
+              HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Image Source="black50.png" Aspect="Fill"
+         HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
-                </Rectangle.GestureRecognizers>
-            </Rectangle>
+                </Image.GestureRecognizers>
+            </Image>
             <controls:SignProcessingView BindingContext="{Binding SignProcessingViewModel}"/>
         </Grid>
 
         <Grid Grid.RowSpan="2"
               IsVisible="{Binding ShowStopSignView}"
               HorizontalOptions="Fill" VerticalOptions="Fill">
-            <Rectangle BackgroundColor="{StaticResource Black}" 
-                        Opacity="0.5"
-                     HorizontalOptions="Fill" VerticalOptions="Fill">
-                <Rectangle.GestureRecognizers>
+            <Image Source="black50.png" Aspect="Fill"
+         HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
-                </Rectangle.GestureRecognizers>
-            </Rectangle>
-            <!--<Rectangle BackgroundColor="Black" Opacity="0.5"/>-->
+                </Image.GestureRecognizers>
+            </Image>
             <controls:StopSignView 
                 WidthRequest="333" HeightRequest="203"
                 BindingContext="{Binding StopSignViewModel}"
+                VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding ShowSignResultView}"
+              HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Image Source="black50.png" Aspect="Fill"
+                     HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding EmptyCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <controls:SignResultView 
+                WidthRequest="333" HeightRequest="203"
+                BindingContext="{Binding SignResultViewModel}"
                 VerticalOptions="Center" HorizontalOptions="Center"/>
         </Grid>
 

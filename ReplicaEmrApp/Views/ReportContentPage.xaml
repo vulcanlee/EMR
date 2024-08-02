@@ -7,9 +7,14 @@
              x:DataType="viewModel:ReportContentPageViewModel">
 
   <Grid>
-        <WebView Source="{Binding Url}"
+        <!--<WebView Source="{Binding Url}"
                  VerticalOptions="Fill"
-                 HorizontalOptions="Fill"/>
-  </Grid>
+                 HorizontalOptions="Fill"/>-->
+        <WebView>
+            <WebView.Source>
+                <HtmlWebViewSource Html="{Binding HtmlContent}" />
+            </WebView.Source>
+        </WebView>
+    </Grid>
 
 </ContentPage>

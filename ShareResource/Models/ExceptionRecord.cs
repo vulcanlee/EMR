@@ -11,5 +11,6 @@ namespace ShareResource.Models
         public string Model { get; set; } = string.Empty;
         public string Version { get; set; } = string.Empty;
         public string Exception { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
     }
 }
