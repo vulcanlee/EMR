@@ -38,6 +38,14 @@ namespace ReplicaEmrApp.Services
             this.deviceService = deviceService;
         }
 
+        /// <summary>
+        /// 檢查是否需要重新登入
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dto"></param>
+        /// <param name="specifyLog"></param>
+        /// <param name="showAlertDialog"></param>
+        /// <returns></returns>
         public async Task<bool> ReloadDataAsync<T>(ApiResultModel<T> dto, OperlogDto specifyLog, bool showAlertDialog = true)
         {
             if (dto != null && dto.code == MagicValueHelper.NeedLoginStatus)

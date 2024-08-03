@@ -16,6 +16,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using ReplicaEmrApp.Models.Mcs;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using System;
+using Microsoft.Extensions.Logging;
+
 
 #if ANDROID
 using ReplicaEmrApp;
@@ -150,6 +152,11 @@ public static class MauiProgram
             .ValueOf(Android.Graphics.Color.White);
         });
 #endif
+
+#if DEBUG
+    		builder.Logging.AddDebug();
+#endif
+        builder.Logging.AddConsole();
 
         var app = builder.Build();
         return app;

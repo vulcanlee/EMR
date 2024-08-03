@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Prism.Services;
 using ReplicaEmrApp.Dto;
@@ -21,6 +22,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
 {
     #region Field Member
     private readonly INavigationService navigationService;
+    private readonly ILogger<HomePageViewModel> logger;
     private readonly GlobalObject globalObject;
     private readonly UnsignService unsignService;
     private readonly IEventAggregator eventAggregator;
@@ -40,9 +42,44 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
 
     List<UnsignReportData> data { get; set; }
     UnsignReportData currentSignItem { get; set; }
-    int currentIndex { get; set; }
-    bool autoSignMode = false;
     SignRequest signRequest = new SignRequest();
+    /// <summary>
+    /// 現在簽章到第幾筆報告
+    /// </summary>
+    int currentIndex { get; set; }
+    /// <summary>
+    /// 是否暫停簽章
+    /// </summary>
+    bool isPauseSign = false;
+    /// <summary>
+    /// 是否取消簽章
+    /// </summary>
+    bool isCancelSign = false;
+    /// <summary>
+    /// 是否停止簽章
+    /// </summary>
+    bool isStopSign = false;
+    /// <summary>
+    /// 是否正在自動簽章模式下
+    /// </summary>
+    bool autoSignMode = false;
+    /// <summary>
+    /// 是否正在進行簽章並儲存作業，避免多次同時執行同一筆報告簽章
+    /// </summary>
+    bool isSigningAndSaving = false;
+    /// <summary>
+    /// 上次啟動 MCS App 的時間
+    /// </summary>
+    DateTime? lastLaunchMcsAppTime = null;
+    /// <summary>
+    /// 等待 MCS App 回應的最大秒數
+    /// </summary>
+    int waitMcsAppResponseMaxSeconds = 20;
+    /// <summary>
+    /// 是否進入睡眠模式(背景模式)
+    /// </summary>
+    bool isSleepMode = false;
+
     #endregion
 
     #region Property Member
@@ -71,9 +108,6 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     bool showSignProcessingView = false;
     [ObservableProperty]
     SignProcessingViewModel signProcessingViewModel = new();
-    bool isPauseSign = false;
-    bool isCancelSign = false;
-    bool isStopSign = false;
 
     [ObservableProperty]
     StopSignViewModel stopSignViewModel = new StopSignViewModel();
@@ -85,15 +119,14 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     [ObservableProperty]
     bool showSignResultView = false;
 
-    bool isSigningAndSaving = false;
-
     [ObservableProperty]
     string testValue = string.Empty;
 
     #endregion
 
     #region Constructor
-    public HomePageViewModel(INavigationService navigationService, GlobalObject globalObject,
+    public HomePageViewModel(INavigationService navigationService,
+        ILogger<HomePageViewModel> logger, GlobalObject globalObject,
         IEventAggregator eventAggregator, UnsignService unsignService,
         IPageDialogService dialogService, IStorageJSONService<GlobalObject> storageJSONService,
         CurrentDeviceInformationService currentDeviceInformationService
@@ -104,6 +137,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         CheckUploadService checkUploadService)
     {
         this.navigationService = navigationService;
+        this.logger = logger;
         this.globalObject = globalObject;
         this.unsignService = unsignService;
         this.eventAggregator = eventAggregator;
@@ -177,59 +211,10 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     [RelayCommand]
     public async Task SignAllAsync()
     {
-        if (data.Count < 1)
-        {
-            await dialogService.DisplayAlertAsync("提示", "無簽章資料", "確定");
-            return;
-        }
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            DeviceDisplay.Current.KeepScreenOn = true;
-            autoSignMode = true;
-        });
-
-        isPauseSign = false;
-        isCancelSign = false;
-        isStopSign = false;
-        ShowSignResultView = false;
-        currentIndex = 0;
-
-        //檢驗憑證並上傳、確認token是否失效
-        if (string.IsNullOrEmpty(globalObject.CertificateData) || string.IsNullOrEmpty(globalObject.IdentityNo))
-        {
-            bool isEngineerMode = await parameterService.GetEngineerModeAsync();
-            string message = isEngineerMode ? "請重新登入並關閉工程模式" : "請重新登入";
-            await dialogService.DisplayAlertAsync("查無憑證", message, "確定");
-            return;
-        }
-        var checkUploadRequest = new CheckUploadRequestDto()
-        {
-            CertData = globalObject.CertificateData,
-            CertFrom = 4,
-            BasicId = globalObject.IdentityNo
-        };
-        (ApiResultModel<object> checkUploadApiResult, var specifyLog) = await checkUploadService.PostAsync(checkUploadRequest);
-        if (await checkSessionService.ReloadDataAsync(checkUploadApiResult, specifyLog))
-        {
-            DeviceDisplay.Current.KeepScreenOn = false;
-            autoSignMode = false;
-            return;
-        }
-
-        ShowNavigationPage = false;
-        ShowSignProcessingView = true;
-        SignProcessingViewModel.Message = $"{currentIndex}/{data.Count}";
-        SignProcessingViewModel.Progress = 0;
-        SignResultViewModel.Title = "簽章完成";
-        SignResultViewModel.Total = data.Count;
-        SignResultViewModel.SuccessCount = 0;
-        SignResultViewModel.FailCount = 0;
-        SignResultViewModel.ButtonColor = MagicValueHelper.Danger;
-        SignResultViewModel.ButtonText = "關閉自動簽章";
-
-        await Signature();
-
+        await PressSingAllButtonAsync();
     }
+
+
     [RelayCommand]
     public void StopSignProcessing()
     {
@@ -245,35 +230,24 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         ShowSignProcessingView = true;
         isPauseSign = false;
         isStopSign = false;
-        await Signature();
+        Signature();
     }
 
     [RelayCommand]
     public void StopButton()
     {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            DeviceDisplay.Current.KeepScreenOn = false;
-            autoSignMode = false;
-        });
-        isStopSign = true;
-        ShowStopSignView = false;
-        ShowSignResultView = true;
-        //TODO:關閉自動簽章
-        SignResultViewModel.Title = "簽章中斷";
-        SignResultViewModel.Total = SignResultViewModel.SuccessCount + SignResultViewModel.FailCount;
-        SignResultViewModel.Message = "已關閉自動簽章模式";
-        SignResultViewModel.ButtonColor = MagicValueHelper.Primary;
-        SignResultViewModel.ButtonText = "確認";
+        PressStopButton();
     }
 
     [RelayCommand]
     public async Task StopAutoSignButtonAsync()
     {
         MainThread.BeginInvokeOnMainThread(() => { DeviceDisplay.Current.KeepScreenOn = false; autoSignMode = false; });
-        ShowSignResultView = false; 
+        ShowSignProcessingView = ShowStopSignView = ShowSignResultView = false;
+
         await ReloadAsync();
         ShowNavigationPage = true;
+        lastLaunchMcsAppTime = null;
     }
 
     [RelayCommand]
@@ -285,6 +259,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     #region Navigation Event
     public void OnNavigatedFrom(INavigationParameters parameters)
     {
+        PressStopButton();
         WeakReferenceMessenger.Default.Unregister<SignResponse>(this);
     }
 
@@ -293,23 +268,22 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     {
         WeakReferenceMessenger.Default.Register<SignResponse>(this, async (sender, message) =>
         {
+            #region 處理 MCS 的報告簽章結果，並且儲存到 EMR Server
             try
             {
-                Debug.WriteLine("------------ getMcsResponse:" + DateTime.Now);
+                logger.LogInformation("------------ 處理 MCS App 報告簽章結果 getMcsResponse:" + DateTime.Now);
+                lastLaunchMcsAppTime = null;
                 //await Task.Delay(3000);
-                if (isPauseSign || isStopSign)
-                {
-                    isSigningAndSaving = false;
-                    return;
-                }
+                if (isPauseSign || isStopSign) { isSigningAndSaving = false; return; }
                 if (message.Code == "0")
                 {
-                    Debug.WriteLine($"{this.GetHashCode()}");
-                    if (currentSignItem == null) Debug.WriteLine("currentSignItem is null");
-                    if (message == null) Debug.WriteLine("message is null");
-                    if (globalObject == null) Debug.WriteLine("globalObject is null");
-                    if (signatureAddService == null) Debug.WriteLine("signatureAddService is null");
-                    Debug.WriteLine("------------ beforeSave:" + DateTime.Now);
+                    #region 此報告已經成功透過 MCS App 進行簽章行為
+                    logger.LogInformation($"{this.GetHashCode()}");
+                    if (currentSignItem == null) logger.LogInformation("currentSignItem is null");
+                    if (message == null) logger.LogInformation("message is null");
+                    if (globalObject == null) logger.LogInformation("globalObject is null");
+                    if (signatureAddService == null) logger.LogInformation("signatureAddService is null");
+                    logger.LogInformation("------------ 進行報告儲存作業前 beforeSave:" + DateTime.Now);
                     ApiResultModel<SignatureAddRequestDto> addResult = new ApiResultModel<SignatureAddRequestDto>();
 
                     (addResult, var specifyLog) = await signatureAddService.PostAsync(new SignatureAddRequestDto()
@@ -324,9 +298,11 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
                         ReadType = 3
                     });
                     //await Task.Delay(3000);
-                    Debug.WriteLine("------------ afterSave:" + DateTime.Now);
-                    await checkSessionService.ReloadDataAsync(addResult, specifyLog, false);
-                    Debug.WriteLine("------------ afterReload:" + DateTime.Now);
+                    logger.LogInformation("------------ 進行報告儲存作業後 afterSave:" + DateTime.Now);
+                    bool needRelogin = await checkSessionService.ReloadDataAsync(addResult, specifyLog, false);
+                    logger.LogInformation("------------ 檢查是否需要重新登入  afterReload:" + DateTime.Now);
+                    if (needRelogin) { isSigningAndSaving = false; return; }
+
                     if (addResult.code == MagicValueHelper.SuccessStatus)
                     {
                         SignResultViewModel.SuccessCount++;
@@ -335,9 +311,11 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
                     {
                         SignResultViewModel.FailCount++;
                     }
+                    #endregion
                 }
                 else
                 {
+                    #region 此報告透過 MCS App 進行簽章，但是發生了問題
                     //TODO: 摳log參數調整
                     SignResultViewModel.FailCount++;
                     OperlogDto operlog = new OperlogDto();
@@ -356,18 +334,20 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
                     });
 
                     await failLogService.AddPostToFileAsync(operlog);
+                    #endregion
                 }
 
                 SignProcessingViewModel.Message = $"{currentIndex + 1}/{data.Count}";
                 SignProcessingViewModel.Progress = (double)(currentIndex + 1) / data.Count;
                 currentIndex++;
                 isSigningAndSaving = false;
-                await Signature();
+                Signature();
             }
             catch (Exception ex)
             {
                 await dialogService.DisplayAlertAsync("簽章失敗", ex.ToString(), "確定");
             }
+            #endregion
         });
 
         //TODO: 要直接call參數api，因可能直接進到home
@@ -444,50 +424,11 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     #endregion
 
     #region Other Method
-    private async Task Signature()
-    {
-        Debug.WriteLine("------------- beforeCallMcs");
-        //await Task.Delay(3000);
-        if (isPauseSign || isStopSign) return;
-        if (currentIndex >= data.Count)
-        {
-            ShowSignProcessingView = false;
-            ShowSignResultView = true;
-            AutoSignAsync();
-            return;
-        }
-        else
-        {
-            if (isSigningAndSaving) return;
-            isSigningAndSaving = true;
-            currentSignItem = data[currentIndex];
 
-            signRequest = new SignRequest()
-            {
-                HostialCode = globalObject.TenantCode,
-                Account = globalObject.UserName,
-                Password = globalObject.PWord,
-                Scheme = MagicValueHelper.SignScheme,
-                Operation = MagicValueHelper.SignOperation,
-                HashFlag = parameterService.GetHashFlag(),
-                Data = currentSignItem.digest
-            };
-#if ANDROID
-            WeakReferenceMessenger.Default.Send(signRequest);
-#elif IOS
-            bool supportsUri = await Launcher.Default.CanOpenAsync("cgappsign://");
-
-            if (supportsUri)
-            {
-                AppDelegate.requestCode = ActivityRequestCodeEnum.SignRequestCode;
-                await Launcher.Default.OpenAsync("cgappsign://ridetype/?urlSchemes=exentricemrapp&" +
-                    $"operation=sign&account={globalObject.UserName}&password={globalObject.PWord}&hospital_code={globalObject.TenantCode}&" +
-                    $"hash_flag={parameterService.GetHashFlag()}&data={currentSignItem.digest}");
-            }
-#endif
-        }
-    }
-
+    /// <summary>
+    /// 進行自動簽章
+    /// </summary>
+    /// <returns></returns>
     private async Task AutoSignAsync()
     {
         var repeatSeconds = Convert.ToInt32(await parameterService.GetRepeatIntervalAsync());
@@ -511,21 +452,205 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
             SignResultViewModel.ButtonColor = MagicValueHelper.Danger;
             SignResultViewModel.ButtonText = "關閉自動簽章";
 
-            AutoSignAsync();
+            await AutoSignAsync();
             return;
         }
-        SignAllAsync();
+        await SignAllAsync();
     }
 
     public void OnResume()
     {
-        //throw new NotImplementedException();
+        logger.LogInformation("------------ HomePageViewModel OnResume:" + DateTime.Now);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isSleepMode:" + isSleepMode);
+        //logger.LogInformation("------------ HomePageViewModel OnResume autoSignMode:" + autoSignMode);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isPauseSign:" + isPauseSign);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isStopSign:" + isStopSign);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isSigningAndSaving:" + isSigningAndSaving);
+        //logger.LogInformation("------------ HomePageViewModel OnResume currentIndex:" + currentIndex);
+        //logger.LogInformation("------------ HomePageViewModel OnResume data.Count:" + data.Count);
+
+        if (autoSignMode)
+        {
+            if (lastLaunchMcsAppTime.HasValue)
+            {
+                var timeSpan = DateTime.Now - lastLaunchMcsAppTime.Value;
+                if (timeSpan.TotalSeconds < waitMcsAppResponseMaxSeconds)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    DeviceDisplay.Current.KeepScreenOn = true;
+                });
+                    isSleepMode = false;
+                    isSigningAndSaving = false;
+                    Signature();
+                    return;
+                }
+            }
+            isSleepMode = false;
+            PressStopButton();
+        }
     }
 
     public void OnSleep()
     {
-        //if (autoSignMode)
-        //    StopButton();
+        logger.LogInformation("------------ HomePageViewModel OnSleep:" + DateTime.Now);
+        isSleepMode = true;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            DeviceDisplay.Current.KeepScreenOn = false;
+        });
+    }
+
+    private async Task PressSingAllButtonAsync()
+    {
+        logger.LogInformation("------------ PressSingAllButtonAsync:" + DateTime.Now);
+        lastLaunchMcsAppTime = null;
+        isSleepMode = false;
+        if (data.Count < 1)
+        {
+            await dialogService.DisplayAlertAsync("提示", "無簽章資料", "確定");
+            return;
+        }
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            DeviceDisplay.Current.KeepScreenOn = true;
+            autoSignMode = true;
+        });
+
+        isPauseSign = false;
+        isCancelSign = false;
+        isStopSign = false;
+        ShowSignResultView = false;
+        currentIndex = 0;
+
+        //檢驗憑證並上傳、確認token是否失效
+        if (string.IsNullOrEmpty(globalObject.CertificateData) || string.IsNullOrEmpty(globalObject.IdentityNo))
+        {
+            bool isEngineerMode = await parameterService.GetEngineerModeAsync();
+            string message = isEngineerMode ? "請重新登入並關閉工程模式" : "請重新登入";
+            await dialogService.DisplayAlertAsync("查無憑證", message, "確定");
+            return;
+        }
+        var checkUploadRequest = new CheckUploadRequestDto()
+        {
+            CertData = globalObject.CertificateData,
+            CertFrom = 4,
+            BasicId = globalObject.IdentityNo
+        };
+        (ApiResultModel<object> checkUploadApiResult, var specifyLog) = await checkUploadService.PostAsync(checkUploadRequest);
+        if (await checkSessionService.ReloadDataAsync(checkUploadApiResult, specifyLog))
+        {
+            DeviceDisplay.Current.KeepScreenOn = false;
+            autoSignMode = false;
+            return;
+        }
+
+        ShowNavigationPage = false;
+        ShowSignProcessingView = true;
+        SignProcessingViewModel.Message = $"{currentIndex}/{data.Count}";
+        SignProcessingViewModel.Progress = 0;
+        SignResultViewModel.Title = "簽章完成";
+        SignResultViewModel.Total = data.Count;
+        SignResultViewModel.SuccessCount = 0;
+        SignResultViewModel.FailCount = 0;
+        SignResultViewModel.ButtonColor = MagicValueHelper.Danger;
+        SignResultViewModel.ButtonText = "關閉自動簽章";
+
+        Signature();
+    }
+    /// <summary>
+    /// 
+    /// 進行報告簽章
+    /// </summary>
+    /// <returns></returns>
+    private async Task Signature()
+    {
+        logger.LogInformation(">>>>>>>>>>>>> HomePageViewModel Signature 正在簽章報告索引數 : " + currentIndex);
+        logger.LogInformation("------------- 準備進行報告簽章前準備工作 beforeCallMcs");
+        //await Task.Delay(3000);
+        if (isPauseSign || isStopSign)
+        {
+            logger.LogInformation("************ HomePageViewModel Signature 因為暫停或停止簽章，所以，終止自動簽章:" + DateTime.Now);
+            logger.LogInformation("------------ HomePageViewModel Signature isPauseSign:" + isPauseSign);
+            logger.LogInformation("------------ HomePageViewModel Signature isStopSign:" + isStopSign);
+            return;
+        }
+        if (currentIndex >= data.Count)
+        {
+            #region 進入自動簽章模式，稍後一段時間，將會重新簽章
+            logger.LogInformation("------------ HomePageViewModel Signature 全部報告簽章完畢，重新進入自動簽章模式:" + DateTime.Now);
+            ShowSignProcessingView = false;
+            ShowSignResultView = true;
+            await AutoSignAsync();
+            return;
+            #endregion
+        }
+        else
+        {
+            if (isSigningAndSaving)
+            {
+                logger.LogInformation("************ HomePageViewModel Signature 因為正在進行簽章並儲存作業，所以，終止這次要求簽章行為:" + DateTime.Now);
+                return; //避免多次同時執行同一筆報告簽章
+            }
+            isSigningAndSaving = true;
+            currentSignItem = data[currentIndex]; //取得目前要簽章的報告
+
+            signRequest = new SignRequest()
+            {
+                HostialCode = globalObject.TenantCode,
+                Account = globalObject.UserName,
+                Password = globalObject.PWord,
+                Scheme = MagicValueHelper.SignScheme,
+                Operation = MagicValueHelper.SignOperation,
+                HashFlag = parameterService.GetHashFlag(),
+                Data = currentSignItem.digest
+            };
+
+            #region 準備進行呼叫 MCS App
+            if (isSleepMode)
+            {
+                logger.LogInformation("************ HomePageViewModel Signature 因為睡眠模式，所以，終止自動簽章:" + DateTime.Now);
+                //isSigningAndSaving = false;
+                //PressStopButton();
+                return;
+            }
+            lastLaunchMcsAppTime = DateTime.Now;
+            logger.LogInformation("------------ HomePageViewModel Signature 進行呼叫 MCS App:" + DateTime.Now);
+#if ANDROID
+            WeakReferenceMessenger.Default.Send(signRequest);
+#elif IOS
+            bool supportsUri = await Launcher.Default.CanOpenAsync("cgappsign://");
+
+            if (supportsUri)
+            {
+                AppDelegate.requestCode = ActivityRequestCodeEnum.SignRequestCode;
+                await Launcher.Default.OpenAsync("cgappsign://ridetype/?urlSchemes=exentricemrapp&" +
+                    $"operation=sign&account={globalObject.UserName}&password={globalObject.PWord}&hospital_code={globalObject.TenantCode}&" +
+                    $"hash_flag={parameterService.GetHashFlag()}&data={currentSignItem.digest}");
+            }
+#endif
+            #endregion
+        }
+    }
+
+    private void PressStopButton()
+    {
+        logger.LogInformation("------------ PressStopButton:" + DateTime.Now);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            DeviceDisplay.Current.KeepScreenOn = false;
+            autoSignMode = false;
+        });
+        isStopSign = true;
+        ShowStopSignView = false;
+        ShowSignResultView = true;
+        isSigningAndSaving = false;
+        //TODO:關閉自動簽章
+        SignResultViewModel.Title = "簽章中斷";
+        SignResultViewModel.Total = SignResultViewModel.SuccessCount + SignResultViewModel.FailCount;
+        SignResultViewModel.Message = "已關閉自動簽章模式";
+        SignResultViewModel.ButtonColor = MagicValueHelper.Primary;
+        SignResultViewModel.ButtonText = "確認";
     }
 
     #endregion
