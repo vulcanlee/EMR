@@ -74,7 +74,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     /// <summary>
     /// 等待 MCS App 回應的最大秒數
     /// </summary>
-    int waitMcsAppResponseMaxSeconds = 20;
+    int waitMcsAppResponseMaxSeconds = 10;
     /// <summary>
     /// 是否進入睡眠模式(背景模式)
     /// </summary>
@@ -218,15 +218,15 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     [RelayCommand]
     public void StopSignProcessing()
     {
+        HiddenAllProcessingView();
         ShowStopSignView = true;
-        ShowSignProcessingView = false;
         isPauseSign = true;
     }
 
     [RelayCommand]
     public async Task CancelButton()
     {
-        ShowStopSignView = false;
+        HiddenAllProcessingView();
         ShowSignProcessingView = true;
         isPauseSign = false;
         isStopSign = false;
@@ -375,6 +375,61 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
             ShowNavigationPage = true;
         }
     }
+    #endregion
+
+    #region Other Method
+
+    public void OnResume()
+    {
+        logger.LogInformation("------------ HomePageViewModel OnResume:" + DateTime.Now);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isSleepMode:" + isSleepMode);
+        //logger.LogInformation("------------ HomePageViewModel OnResume autoSignMode:" + autoSignMode);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isPauseSign:" + isPauseSign);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isStopSign:" + isStopSign);
+        //logger.LogInformation("------------ HomePageViewModel OnResume isSigningAndSaving:" + isSigningAndSaving);
+        //logger.LogInformation("------------ HomePageViewModel OnResume currentIndex:" + currentIndex);
+        //logger.LogInformation("------------ HomePageViewModel OnResume data.Count:" + data.Count);
+
+        if (autoSignMode)
+        {
+            if (ShowSignResultView == true)
+            {
+                isSigningAndSaving = false;
+                isSleepMode = false;
+                return;
+            }
+
+            if (lastLaunchMcsAppTime.HasValue)
+            {
+                var timeSpan = DateTime.Now - lastLaunchMcsAppTime.Value;
+                if (timeSpan.TotalSeconds < waitMcsAppResponseMaxSeconds)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        DeviceDisplay.Current.KeepScreenOn = true;
+                    });
+                    isSleepMode = false;
+                    isSigningAndSaving = false;
+                    if (ShowSignResultView == false)
+                        Signature();
+                    return;
+                }
+            }
+            isSleepMode = false;
+            PressStopButton();
+        }
+        isSleepMode = false;
+    }
+
+    public void OnSleep()
+    {
+        logger.LogInformation("------------ HomePageViewModel OnSleep:" + DateTime.Now);
+        isSleepMode = true;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            DeviceDisplay.Current.KeepScreenOn = false;
+        });
+    }
 
     private async Task ReloadAsync()
     {
@@ -421,9 +476,6 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         eventAggregator.GetEvent<OnOffNavigationPageEvent>().Publish(new OnOffNavigationPagePayload { IsOn = !IsBusy });
 
     }
-    #endregion
-
-    #region Other Method
 
     /// <summary>
     /// 進行自動簽章
@@ -442,7 +494,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         if (data.Count < 1)
         {
             isStopSign = true;
-            ShowStopSignView = false;
+            HiddenAllProcessingView();
             ShowSignResultView = true;
             currentIndex = 0;
             SignResultViewModel.Title = "簽章完成";
@@ -456,49 +508,6 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
             return;
         }
         await SignAllAsync();
-    }
-
-    public void OnResume()
-    {
-        logger.LogInformation("------------ HomePageViewModel OnResume:" + DateTime.Now);
-        //logger.LogInformation("------------ HomePageViewModel OnResume isSleepMode:" + isSleepMode);
-        //logger.LogInformation("------------ HomePageViewModel OnResume autoSignMode:" + autoSignMode);
-        //logger.LogInformation("------------ HomePageViewModel OnResume isPauseSign:" + isPauseSign);
-        //logger.LogInformation("------------ HomePageViewModel OnResume isStopSign:" + isStopSign);
-        //logger.LogInformation("------------ HomePageViewModel OnResume isSigningAndSaving:" + isSigningAndSaving);
-        //logger.LogInformation("------------ HomePageViewModel OnResume currentIndex:" + currentIndex);
-        //logger.LogInformation("------------ HomePageViewModel OnResume data.Count:" + data.Count);
-
-        if (autoSignMode)
-        {
-            if (lastLaunchMcsAppTime.HasValue)
-            {
-                var timeSpan = DateTime.Now - lastLaunchMcsAppTime.Value;
-                if (timeSpan.TotalSeconds < waitMcsAppResponseMaxSeconds)
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    DeviceDisplay.Current.KeepScreenOn = true;
-                });
-                    isSleepMode = false;
-                    isSigningAndSaving = false;
-                    Signature();
-                    return;
-                }
-            }
-            isSleepMode = false;
-            PressStopButton();
-        }
-    }
-
-    public void OnSleep()
-    {
-        logger.LogInformation("------------ HomePageViewModel OnSleep:" + DateTime.Now);
-        isSleepMode = true;
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            DeviceDisplay.Current.KeepScreenOn = false;
-        });
     }
 
     private async Task PressSingAllButtonAsync()
@@ -520,7 +529,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         isPauseSign = false;
         isCancelSign = false;
         isStopSign = false;
-        ShowSignResultView = false;
+        HiddenAllProcessingView();
         currentIndex = 0;
 
         //檢驗憑證並上傳、確認token是否失效
@@ -579,7 +588,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         {
             #region 進入自動簽章模式，稍後一段時間，將會重新簽章
             logger.LogInformation("------------ HomePageViewModel Signature 全部報告簽章完畢，重新進入自動簽章模式:" + DateTime.Now);
-            ShowSignProcessingView = false;
+            HiddenAllProcessingView();
             ShowSignResultView = true;
             await AutoSignAsync();
             return;
@@ -642,7 +651,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
             autoSignMode = false;
         });
         isStopSign = true;
-        ShowStopSignView = false;
+        HiddenAllProcessingView();
         ShowSignResultView = true;
         isSigningAndSaving = false;
         //TODO:關閉自動簽章
@@ -651,6 +660,13 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         SignResultViewModel.Message = "已關閉自動簽章模式";
         SignResultViewModel.ButtonColor = MagicValueHelper.Primary;
         SignResultViewModel.ButtonText = "確認";
+    }
+
+    void HiddenAllProcessingView()
+    {
+        ShowSignProcessingView = false;
+        ShowStopSignView = false;
+        ShowSignResultView = false;
     }
 
     #endregion
