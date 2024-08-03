@@ -59,7 +59,8 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
         try {
-            globalObject.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string version = $"{AppInfo.Current.VersionString} ({AppInfo.Current.BuildString})";
+            globalObject.Version = version;
             currentDeviceInformationService.Reset();
 
             GlobalObject gObject = await storageJSONOfGlobalObjectService

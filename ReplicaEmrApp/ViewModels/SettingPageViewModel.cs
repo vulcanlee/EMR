@@ -42,11 +42,21 @@ public partial class SettingPageViewModel : ObservableObject, INavigatedAware
         this.storageJSONService = storageJSONService;
         this.pageDialogService = pageDialogService;
         this.parameterService = parameterService;
+
+#if DEBUG
+        VerifyCode = "70400845";
+#endif
     }
     #endregion
 
     #region Method Member
     #region Command Method
+    [RelayCommand]
+    void ShowExceptionList()
+    {
+        navigationService.NavigateAsync("ExceptionListPage");
+    }
+
     [RelayCommand]
     void Tap()
     {
@@ -74,7 +84,7 @@ public partial class SettingPageViewModel : ObservableObject, INavigatedAware
         {
             await pageDialogService.DisplayAlertAsync("警告", "驗證碼錯誤", "確定");
         }
-    }   
+    }
     #endregion
 
     #region Navigation Event

@@ -39,25 +39,24 @@ public static class MauiProgram
             .GetService<CurrentDeviceInformationService>();
             var globalObject = ServiceProviderHelper.Current
             .GetService<GlobalObject>();
+            string version = $"{AppInfo.Current.VersionString} ({AppInfo.Current.BuildString})";
             var exceptionRecord = new ExceptionRecord();
             exceptionRecord.Exception = JsonConvert.SerializeObject(e.ExceptionObject);
             exceptionRecord.Platform = currentDeviceInformationService.Current.Platform;
             exceptionRecord.Model = currentDeviceInformationService.Current.Model;
-            exceptionRecord.Version = currentDeviceInformationService.Current.VersionString;
+            exceptionRecord.Version = version;
             exceptionRecord.UserId = globalObject?.UserName;
             exceptionRecord.CreateAt = DateTime.Now;
             exceptionRecord.Message = (e.ExceptionObject as Exception)?.Message;
 
-            var storageJSONService = ServiceProviderHelper.Current
-            .GetService<IStorageJSONService<List<ExceptionRecord>>>();
-            List<ExceptionRecord> datas = storageJSONService
-            .ReadFromFileAsync(MagicValueHelper.DataPath,
-            MagicValueHelper.ExceptionRecordFilename).Result;
+            //var storageJSONService = ServiceProviderHelper.Current
+            //.GetService<IStorageJSONService<List<ExceptionRecord>>>();
+            //List<ExceptionRecord> datas = storageJSONService
+            //.ReadFromFileAsync(MagicValueHelper.DataPath,
+            //MagicValueHelper.ExceptionRecordFilename).Result;
 
-            datas.Add(exceptionRecord);
-
-            storageJSONService
-            .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
+            //storageJSONService
+            //.WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
 
             Task.Run(() =>
             {
@@ -67,7 +66,20 @@ public static class MauiProgram
                 .ReadFromFileAsync(MagicValueHelper.DataPath,
                 MagicValueHelper.ExceptionRecordFilename).Result;
 
-                datas.Add(exceptionRecord);
+                datas.Insert(0, exceptionRecord);
+
+                while (true)
+                {
+                    if (datas.Count > 30)
+                    {
+                        var item = datas.LastOrDefault();
+                        datas.Remove(item);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
                 storageJSONService
                 .WriteToDataFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename, datas).Wait();
@@ -132,7 +144,7 @@ public static class MauiProgram
                 fonts.AddFont("materialdesignicons-webfont.ttf", "material");
             });
 
-                var a = Assembly.GetExecutingAssembly();
+        var a = Assembly.GetExecutingAssembly();
         using var stream = a.GetManifestResourceStream("ReplicaEmrApp.appsettings.json");
 
         var config = new ConfigurationBuilder()
@@ -154,7 +166,7 @@ public static class MauiProgram
 #endif
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
         builder.Logging.AddConsole();
 

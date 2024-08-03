@@ -125,7 +125,7 @@
                 </Border.Shadow>
                 <Entry Text="{Binding VerifyCode}" Margin="12,0" IsPassword="True" FontSize="14"
                 BackgroundColor="{StaticResource White}" TextColor="{StaticResource Black}" Placeholder="驗證碼" 
-                HorizontalOptions="Fill"></Entry>  
+                HorizontalOptions="Fill"></Entry>
             </Border>
             <Button Text="確認" Margin="0,30,0,0" CornerRadius="20" FontSize="14"
                 HeightRequest="40" HorizontalOptions="Fill" TextColor="{StaticResource White}"
@@ -135,6 +135,23 @@
                 </Button.Shadow>
             </Button>
         </VerticalStackLayout>
+
+        <Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,70"
+              WidthRequest="60" HeightRequest="60">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ShowExceptionListCommand}"/>
+            </Grid.GestureRecognizers>
+            <BoxView CornerRadius="30,30,30,30" Color="DarkGray">
+
+            </BoxView>
+            <Image WidthRequest="50" HeightRequest="50" >
+                <Image.Source>
+                    <FontImageSource Glyph="&#xF1AF8;"
+                         FontFamily="material"
+                         Size="60" />
+                </Image.Source>
+            </Image>
+        </Grid>
     </Grid>
 
 </ContentPage>
