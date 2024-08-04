@@ -18,6 +18,10 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 using System;
 using Microsoft.Extensions.Logging;
 using ReplicaEmrApp.Extensions;
+using MyApp.Views;
+using MyApp.ViewModels;
+
+
 
 
 
@@ -117,6 +121,8 @@ public static class MauiProgram
                     container.Register<TenantService>();
                     container.Register<IDeviceService, DeviceService>();
                     container.RegisterInstance<IDeviceInfo>(DeviceInfo.Current);
+                    container.RegisterForNavigation<ExceptionDetailPage, ExceptionDetailPageViewModel>();
+                    container.RegisterForNavigation<ExceptionListPage, ExceptionListPageViewModel>();
                     container.RegisterForNavigation<SettingPage, SettingPageViewModel>();
                     container.RegisterForNavigation<SplashPage, SplashPageViewModel>();
                     container.RegisterForNavigation<LoginPage, LoginPageViewModel>();

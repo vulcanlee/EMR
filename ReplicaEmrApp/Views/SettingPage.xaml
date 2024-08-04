@@ -137,11 +137,11 @@
         </VerticalStackLayout>
 
         <Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,70"
-              WidthRequest="60" HeightRequest="60">
+              WidthRequest="60" HeightRequest="60" IsVisible="{Binding ShowSettingArea}">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ShowExceptionListCommand}"/>
             </Grid.GestureRecognizers>
-            <BoxView CornerRadius="30,30,30,30" Color="DarkGray">
+            <BoxView CornerRadius="30,30,30,30" Color="#fa6446">
 
             </BoxView>
             <Image WidthRequest="50" HeightRequest="50" >

@@ -5,9 +5,65 @@
              Title="閃退例外異常清單"
              x:Class="ReplicaEmrApp.Views.ExceptionListPage"
              x:DataType="viewModels:ExceptionListPageViewModel"
+             xmlns:share="clr-namespace:ShareResource.Models;assembly=ShareResource"
              BackgroundColor="{StaticResource Secondary}">
 
-  <Grid>
-  </Grid>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="異常" Command="{Binding ThrowExceptionCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <Grid Margin="0,16,0,20">
+            <CollectionView ItemsSource="{Binding ExceptionRecordList}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="share:ExceptionRecord">
+                        <Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding 
+                                    Source={RelativeSource AncestorType={x:Type viewModels:ExceptionListPageViewModel}},
+                                    Path=ShowExceptionDetailCommand}" CommandParameter="{Binding .}"/>
+                            </Grid.GestureRecognizers>
+                            <Border Margin="20,0,20,12" StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="{StaticResource Shadow}" Offset="10,12" Radius="9" Opacity="0.2"/>
+                                </Border.Shadow>
+                                <Grid BackgroundColor="{StaticResource Primary}" Padding="8,0,0,0">
+                                    <Border Stroke="{StaticResource White}" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="3,10,3,10"/>
+                                        </Border.StrokeShape>
+                                        <Grid Padding="12,10" BackgroundColor="{StaticResource White}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="14"/>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0" >
+                                                <Image Source="calendar.png" Margin="0,0,4,0" WidthRequest="14" HeightRequest="14"/>
+                                                <Label FontSize="12"  Text="{Binding CreateAt}" TextColor="{StaticResource Black}" VerticalOptions="Center"/>
+                                            </HorizontalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" >
+                                                <Label Text="錯誤訊息：" TextColor="{StaticResource Black}"/>
+                                                <Label FontSize="12" Text="{Binding Message}" TextColor="{StaticResource Black}" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
 
 </ContentPage>

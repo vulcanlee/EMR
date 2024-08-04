@@ -34,6 +34,10 @@ dotnet new Full-Maui -o d:\Temp\ReplicaEmrApp
 
 dotnet new MVVMItem  --namespace ReplicaEmrApp --view-name ExceptionList
 
+# Create a new View and ViewModel for Prism MAUI Project (don't append Page to view-name parameter)
+
+dotnet new MVVMPrismItem --namespace MyApp --view-name ExceptionDetail
+
 * 移除此專案範本
 
 dotnet new uninstall Vulcan.Maui.Template
