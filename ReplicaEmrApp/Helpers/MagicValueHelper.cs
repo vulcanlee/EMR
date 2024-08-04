@@ -24,6 +24,7 @@ namespace ReplicaEmrApp.Helpers
         #region File Name
         public const string DataPath = $"data";
         public const string ExceptionRecordFilename = $"ExceptionRecord.json";
+        public const string SignItemLogFilename = $"SignItemLogs.json";
         public const string FailLogRecordFilename = $"FailLogRecord.json";
         public const string UnsignReportDataFilename = $"UnsignReportData.json";
         public const string ConfigDataFilename = $"ConfigData.json";

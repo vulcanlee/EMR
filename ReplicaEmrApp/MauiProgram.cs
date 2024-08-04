@@ -107,6 +107,7 @@ public static class MauiProgram
                     container.RegisterSingleton<CurrentDeviceInformationService>();
                     container.RegisterSingleton<GlobalObject>();
                     container.RegisterSingleton<UnsignReportStorageService>();
+                    container.RegisterSingleton<SignItemLogService>();
                     container.Register(typeof(IStorageJSONService<>), typeof(StorageJSONService<>));
                     container.Register(typeof(IStorageUtility), typeof(StorageUtility));
                     container.Register<LoginService>();

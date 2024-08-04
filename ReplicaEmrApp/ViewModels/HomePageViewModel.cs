@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Prism.Services;
 using ReplicaEmrApp.Dto;
 using ReplicaEmrApp.Enums;
 using ReplicaEmrApp.Events;
@@ -11,10 +10,7 @@ using ReplicaEmrApp.Helpers;
 using ReplicaEmrApp.Models;
 using ReplicaEmrApp.Models.Mcs;
 using ReplicaEmrApp.Services;
-using ShareResource.Models;
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace ReplicaEmrApp.ViewModels;
 
@@ -36,6 +32,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     private readonly IDeviceService deviceService;
     private readonly FailLogService failLogService;
     private readonly CheckUploadService checkUploadService;
+    private readonly SignItemLogService signItemLogService;
 
     //debug用
     private readonly IStorageJSONService<SettingModel> settingStorageJSONService;
@@ -134,7 +131,8 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         ParameterService parameterService, ConfigService configService,
         CheckSessionService checkSessionService, SignatureAddService signatureAddService,
         IDeviceService deviceService, FailLogService failLogService,
-        CheckUploadService checkUploadService)
+        CheckUploadService checkUploadService,
+        SignItemLogService signItemLogService)
     {
         this.navigationService = navigationService;
         this.logger = logger;
@@ -152,6 +150,7 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
         this.deviceService = deviceService;
         this.failLogService = failLogService;
         this.checkUploadService = checkUploadService;
+        this.signItemLogService = signItemLogService;
         SignProcessingViewModel.StopViewModelCommand = StopSignProcessingCommand;
         StopSignViewModel.CancelCommand = CancelButtonCommand;
         StopSignViewModel.StopCommand = StopButtonCommand;
