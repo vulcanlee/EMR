@@ -32,7 +32,7 @@ dotnet new Full-Maui -o d:\Temp\ReplicaEmrApp
 
 # Create a new View and ViewModel (don't append Page to view-name parameter)
 
-dotnet new MVVMItem  --namespace ReplicaEmrApp --view-name Swee
+dotnet new MVVMItem  --namespace ReplicaEmrApp --view-name ExceptionList
 
 * 移除此專案範本
 

@@ -17,6 +17,8 @@ using ReplicaEmrApp.Models.Mcs;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using System;
 using Microsoft.Extensions.Logging;
+using ReplicaEmrApp.Extensions;
+
 
 
 #if ANDROID
@@ -48,6 +50,8 @@ public static class MauiProgram
             exceptionRecord.UserId = globalObject?.UserName;
             exceptionRecord.CreateAt = DateTime.Now;
             exceptionRecord.Message = (e.ExceptionObject as Exception)?.Message;
+
+            exceptionRecord.CopyToClipboard();
 
             //var storageJSONService = ServiceProviderHelper.Current
             //.GetService<IStorageJSONService<List<ExceptionRecord>>>();
