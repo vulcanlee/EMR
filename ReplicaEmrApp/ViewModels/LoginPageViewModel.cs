@@ -331,6 +331,7 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
         {
             IsError = true;
             ErrorMessage = ex.Message;
+            await SnackbarHelper.Show($"系統發生問題，請排除問題之後，重新再次啟動應用程式 : {ex.Message}");
             return;
         }
     }
