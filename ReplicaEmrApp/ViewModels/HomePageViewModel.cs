@@ -270,13 +270,8 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
             #region 處理 MCS 的報告簽章結果，並且儲存到 EMR Server
             try
             {
-                if (isSleepMode)
-                {
-                    logger.LogInformation("************ HomePageViewModel WeakReferenceMessenger(0) 因為睡眠模式，所以，終止自動簽章:" + DateTime.Now);
-                    return;
-                }
                 logger.LogInformation("------------ 處理 MCS App 報告簽章結果 getMcsResponse:" + DateTime.Now);
-                lastLaunchMcsAppTime = null;
+                //lastLaunchMcsAppTime = null;
                 //await Task.Delay(3000);
                 if (isPauseSign || isStopSign) { isSigningAndSaving = false; return; }
                 if (message.Code == "0")
@@ -578,11 +573,6 @@ public partial class HomePageViewModel : ObservableObject, INavigatedAware, IApp
     /// <returns></returns>
     private async Task Signature()
     {
-        if (isSleepMode)
-        {
-            logger.LogInformation("************ HomePageViewModel Signature(0) 因為睡眠模式，所以，終止自動簽章:" + DateTime.Now);
-            return;
-        }
 
         logger.LogInformation(">>>>>>>>>>>>> HomePageViewModel Signature 正在簽章報告索引數 : " + currentIndex);
         logger.LogInformation("------------- 準備進行報告簽章前準備工作 beforeCallMcs");
