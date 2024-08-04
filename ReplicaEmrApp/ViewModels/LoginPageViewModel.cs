@@ -172,13 +172,6 @@ public partial class LoginPageViewModel : ObservableObject, INavigatedAware
 
                 }
 
-                List<ExceptionRecord> datas = await exceptionStorageJSONService
-                .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
-                if (datas != null && datas.Count > 0)
-                {
-                    await exceptionService.UploadAsync(datas);
-                }
-
                 if (await parameterService.GetEngineerModeAsync())
                 {
                     await storageJSONService

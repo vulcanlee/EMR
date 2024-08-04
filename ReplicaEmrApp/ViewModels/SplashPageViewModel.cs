@@ -58,6 +58,10 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
+
+        await SnackbarHelper.Show("正在初始化...");
+        await Task.Delay(5000);
+
         try {
             string version = $"{AppInfo.Current.VersionString} ({AppInfo.Current.BuildString})";
             globalObject.Version = version;
@@ -78,18 +82,6 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
                 //隨機摳一隻api確認token沒有失效後才做簽章動作
                 (var configApiResult, var specifyLog) = await configService.GetAsync();
                 if (await checkSessionService.ReloadDataAsync(configApiResult, specifyLog, false)) return;
-
-                //TODO: 移到login、homepage
-                //List<ExceptionRecord> datas = await storageJSONService
-                //    .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.ExceptionRecordFilename);
-                //if (datas != null && datas.Count > 0)
-                //{
-                //    if (await exceptionService.UploadAsync(datas) == false)
-                //    {
-                //        await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
-                //        return;
-                //    }
-                //}
 
                 await navigationService.NavigateAsync(MagicValueHelper.HomePage);
             }
