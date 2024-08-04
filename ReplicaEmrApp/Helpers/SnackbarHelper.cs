@@ -1,16 +1,12 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Font = Microsoft.Maui.Font;
 
 namespace ReplicaEmrApp.Helpers
 {
     public class SnackbarHelper
     {
+        static ISnackbar SnackbarCache = null;
         public static async Task Show(string message)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -26,11 +22,21 @@ namespace ReplicaEmrApp.Helpers
             };
 
             string text = $"{message}";
-            TimeSpan duration = TimeSpan.FromSeconds(2);
+            TimeSpan duration = TimeSpan.FromSeconds(3);
 
-            var snackbar = Snackbar.Make(text, null, "", duration, snackbarOptions);
+            SnackbarCache = Snackbar.Make(text, null, "", duration, snackbarOptions);
 
-            await snackbar.Show(cancellationTokenSource.Token);
+            await SnackbarCache.Show(cancellationTokenSource.Token);
+        }
+
+        public static async Task Dismiss()
+        {
+            if (SnackbarCache == null)
+            {
+                return;
+            }
+            await SnackbarCache.Dismiss();
+            SnackbarCache = null;
         }
     }
 }

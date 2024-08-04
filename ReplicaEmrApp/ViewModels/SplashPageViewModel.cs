@@ -24,6 +24,8 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
     #endregion
 
     #region Property Member
+    [ObservableProperty]
+    bool showRetryButton = false;
     #endregion
 
     #region Constructor
@@ -49,6 +51,12 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     #region Method Member
     #region Command Method
+    [RelayCommand]
+    public async Task Retry()
+    {
+        ShowRetryButton = false;
+        await LaunchAsync();
+    }
     #endregion
 
     #region Navigation Event
@@ -58,11 +66,19 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
     public async void OnNavigatedTo(INavigationParameters parameters)
     {
+        await LaunchAsync();
+    }
 
-        await SnackbarHelper.Show("正在初始化...");
-        await Task.Delay(5000);
+    #endregion
 
-        try {
+    #region Other Method
+    private async Task LaunchAsync()
+    {
+        try
+        {
+            await SnackbarHelper.Show("正在初始化，請稍後 ...");
+            await Task.Delay(1000);
+            //throw new Exception("Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception Test Exception ");
             string version = $"{AppInfo.Current.VersionString} ({AppInfo.Current.BuildString})";
             globalObject.Version = version;
             currentDeviceInformationService.Reset();
@@ -71,6 +87,9 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
         .ReadFromFileAsync(MagicValueHelper.DataPath, MagicValueHelper.GlobalObjectFilename);
             if (gObject == null || string.IsNullOrEmpty(gObject.Token))
             {
+                //await SnackbarHelper.Show("切換到 身分驗證 頁面...");
+
+                await SnackbarHelper.Dismiss();
                 await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
             }
             else
@@ -81,21 +100,24 @@ public partial class SplashPageViewModel : ObservableObject, INavigatedAware
 
                 //隨機摳一隻api確認token沒有失效後才做簽章動作
                 (var configApiResult, var specifyLog) = await configService.GetAsync();
-                if (await checkSessionService.ReloadDataAsync(configApiResult, specifyLog, false)) return;
+                if (await checkSessionService.ReloadDataAsync(configApiResult, specifyLog, false))
+                {
+                    await SnackbarHelper.Show("存取權杖逾期，需要重新進行身分驗證");
+                    return;
+                };
 
+                //await SnackbarHelper.Show("切換到 首頁 頁面...");
+                await SnackbarHelper.Dismiss();
                 await navigationService.NavigateAsync(MagicValueHelper.HomePage);
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
-            await navigationService.NavigateAsync(MagicValueHelper.LoginPage);
+            await SnackbarHelper.Show($"系統啟動發生問題，請排除問題之後，點選[重新啟動]按鈕 : {ex.Message}");
+            ShowRetryButton = true;
             return;
         }
     }
-    #endregion
-
-    #region Other Method
     #endregion
     #endregion
 }

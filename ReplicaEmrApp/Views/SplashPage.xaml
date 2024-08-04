@@ -24,6 +24,11 @@
         </StackLayout>
         <Label Margin="0,0,0,34" HorizontalOptions="Center"  VerticalOptions="End" 
                FontSize="14" TextColor="#000" Text="耀瑄科技"/>
+
+        <Button Text="重新啟動" Command="{Binding RetryCommand}" IsVisible="{Binding ShowRetryButton}"
+                CornerRadius="10"
+                BackgroundColor="{StaticResource Primary}" TextColor="{StaticResource White}"
+                Margin="0,0,0,80" HorizontalOptions="Center" VerticalOptions="End"/>
     </Grid>
 
 </ContentPage>
